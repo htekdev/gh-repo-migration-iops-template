@@ -1,0 +1,60 @@
+# [Category]
+# Utility
+
+name: 'Add Branch Protection Bypass'
+description: 'Add Branch Protection Bypass'
+inputs:
+  app-slug: 
+    description: 'App slug'
+    required: true
+  repository:
+    description: 'Repository name'
+    required: false
+    default: ${{ github.repository }}
+  token:
+    description: 'GitHub token'
+    required: false
+    default: ${{ github.token }}
+outputs:
+  admin_enforced:
+    description: 'Admin enforced'
+    value: ${{ steps.clear-branch-protection.outputs.admin_enforced }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: 🔓 Add Branch Protection Exceptions
+      run: |
+        $branch = $(gh api -XGET repos/$($env:REPO) --jq .default_branch)
+        
+        # Add bypass pull request allowances before doing pushes
+        if($(gh api -XGET repos/$($env:REPO)/branches/$($branch) --jq .protection.enabled) -eq 'true'){
+          $protection = $(gh api -XGET repos/$($env:REPO)/branches/$($branch)/protection) | ConvertFrom-Json
+          $required_pull_request_reviews = $(gh api -XGET repos/$($env:REPO)/branches/$($branch)/protection/required_pull_request_reviews) | ConvertFrom-Json
+          
+          $required_pull_request_reviews | Add-Member -Force -NotePropertyName "bypass_pull_request_allowances" -NotePropertyValue $([pscustomobject]@{
+            apps = @(@(@( @( @(try{$required_pull_request_reviews.bypass_pull_request_allowances.apps.slug}catch{@()}) + @($env:ACTOR_SLUG)) | Get-Unique)) | ? {$_});
+            teams = @(@(try{$required_pull_request_reviews.bypass_pull_request_allowances.teams.login}catch{@()}) | ? {$_});
+            users = @(@(try{$required_pull_request_reviews.bypass_pull_request_allowances.users.login}catch{@()}) | ? {$_});
+          }) -PassThru -Debug
+
+          gh api -X PATCH repos/$($env:REPO)/branches/$($branch)/protection/required_pull_request_reviews `
+            -F bypass_pull_request_allowances[apps][]=$($required_pull_request_reviews.bypass_pull_request_allowances.apps -join ",") `
+            -F bypass_pull_request_allowances[users][]=$($required_pull_request_reviews.bypass_pull_request_allowances.users -join ",") `
+            -F bypass_pull_request_allowances[teams][]=$($required_pull_request_reviews.bypass_pull_request_allowances.teams -join ",") 
+
+          
+          $adminEnforced = $(gh api -XGET repos/$($env:REPO)/branches/$($branch)/protection/enforce_admins --jq .enabled)
+          if($adminEnforced -eq 'true'){
+            gh api -X DELETE  repos/$($env:REPO)/branches/$($branch)/protection/enforce_admins
+          }
+            
+          Write-Output "admin_enforced=$adminEnforced" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf-8 -Append
+        }
+      shell: pwsh
+      id: clear-branch-protection
+      continue-on-error: true
+      env:
+        ACTOR_SLUG: ${{ inputs.app-slug }}
+        GH_TOKEN: ${{ inputs.token }}  
+        REPO: ${{ inputs.repository }}

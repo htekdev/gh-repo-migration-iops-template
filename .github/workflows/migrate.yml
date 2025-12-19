@@ -355,7 +355,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
   # Main migration job - triggered either directly or from issue
-  test:
+  create:
     runs-on: [linux-xl-cac]
     needs: [setup]
     defaults:
@@ -536,7 +536,7 @@ jobs:
       # 🔓 Add Branch Protection Exceptions
       ######################################################################
       - name: 🔓 Add Branch Protection Exceptions
-        uses: {{DEFAULT ORG}}/es-dop-framework/actions/branch-protection-bypass@main
+        uses: ./.github/actions/branch-protection-bypass
         id: clear-branch-protection
         with:
           app-slug: {{APP_NAME}}
