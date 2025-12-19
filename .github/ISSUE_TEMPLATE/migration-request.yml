@@ -2,7 +2,6 @@ name: 🏃‍♂️ Repository Creation/Migration
 description: Request a simple repository creation or migration
 title: '[migration-request]: '
 labels: ['migration-request']
-type: migration-request
 
 body:
 - type: markdown
