@@ -1,0 +1,246 @@
+name: 🐛 Bug Report
+description: Report a bug or issue with the repository migration framework
+title: '[bug]: '
+labels: ['bug', 'needs-triage']
+
+body:
+- type: markdown
+  attributes:
+    value: |
+      ## 🐛 Bug Report
+      
+      Thank you for taking the time to report a bug! This helps us improve the repository migration framework for everyone.
+      
+      ### 📋 Before You Start
+      
+      **Please check first:**
+      - 🔍 Search [existing issues](../../issues) to see if this bug has already been reported
+      - 📚 Review the [README](../../README.md) and documentation
+      - 🔧 Try the latest version to see if the issue has been resolved
+
+- type: dropdown
+  id: severity
+  attributes:
+    label: 🚨 Bug Severity
+    description: How severe is this bug?
+    options:
+      - Critical - Complete failure, migration cannot proceed
+      - High - Major feature broken, significant workaround needed
+      - Medium - Feature partially working, minor workaround available
+      - Low - Minor issue, cosmetic or documentation problem
+    default: 0
+  validations:
+    required: true
+
+- type: dropdown
+  id: component
+  attributes:
+    label: 🧩 Component Affected
+    description: Which part of the migration framework is affected?
+    options:
+      - Migration Workflow - Main migration process
+      - Repository Creation - New repo setup issues
+      - Team Management - Team/permission configuration
+      - Azure DevOps Integration - ADO-specific functionality
+      - Bitbucket Integration - Bitbucket-specific functionality
+      - SVN Integration - SVN-specific functionality
+      - GitHub Integration - GitHub API interactions
+      - PowerShell Scripts - Individual script issues
+      - Documentation - README, templates, or guides
+      - GitHub Actions - Workflow execution problems
+      - Other - Not listed above
+  validations:
+    required: true
+
+- type: textarea
+  id: description
+  attributes:
+    label: 📝 Bug Description
+    description: |
+      **Clearly describe the bug**
+      
+      Provide a clear and concise description of what the bug is. Include:
+      - What you were trying to do
+      - What you expected to happen
+      - What actually happened
+    placeholder: |
+      Example:
+      When attempting to migrate a repository from Azure DevOps, the workflow fails during team creation with a permissions error, even though the service account has the correct permissions configured.
+  validations:
+    required: true
+
+- type: textarea
+  id: steps
+  attributes:
+    label: 🔄 Steps to Reproduce
+    description: |
+      **Provide step-by-step instructions to reproduce the bug**
+      
+      Include specific inputs, configurations, or conditions that trigger the issue.
+    placeholder: |
+      1. Go to 'Actions' tab
+      2. Click on 'Repository Migration'
+      3. Fill in the following parameters:
+         - Organization: my-org
+         - Team Name: platform-team
+         - Repository Name: test-migration
+         - etc.
+      4. Click 'Run workflow'
+      5. Observe error in step 'Create Teams'
+  validations:
+    required: true
+
+- type: textarea
+  id: expected
+  attributes:
+    label: ✅ Expected Behavior
+    description: What did you expect to happen?
+    placeholder: |
+      The migration should complete successfully and create:
+      - A new repository named 'test-migration'
+      - Teams with proper permissions
+      - Migrated code with git history preserved
+  validations:
+    required: true
+
+- type: textarea
+  id: actual
+  attributes:
+    label: ❌ Actual Behavior
+    description: What actually happened? Include any error messages.
+    placeholder: |
+      The workflow failed at step 'Create Teams' with the error:
+      "Error: Failed to create team 'platform-team': Request failed with status code 403"
+  validations:
+    required: true
+
+- type: textarea
+  id: logs
+  attributes:
+    label: 📋 Logs and Error Messages
+    description: |
+      **Include relevant logs, error messages, or screenshots**
+      
+      Please provide:
+      - GitHub Actions workflow logs (copy the relevant sections)
+      - PowerShell error output
+      - API response errors
+      - Screenshots (if applicable)
+      
+      💡 **Tip**: Use triple backticks (```) to format code/logs for better readability
+    placeholder: |
+      ```
+      Error: POST https://api.github.com/orgs/my-org/teams returned 403
+      {
+        "message": "Must have admin rights to Repository.",
+        "documentation_url": "https://docs.github.com/rest/teams/teams#create-a-team"
+      }
+      ```
+  validations:
+    required: false
+
+- type: dropdown
+  id: source-system
+  attributes:
+    label: 📂 Source System
+    description: What system are you migrating from? (if applicable)
+    options:
+      - Not applicable - Repository creation only
+      - Azure DevOps (ADO)
+      - Bitbucket
+      - SVN (Subversion)
+      - GitHub (repository to repository)
+      - Other
+  validations:
+    required: false
+
+- type: input
+  id: workflow-run
+  attributes:
+    label: 🔗 GitHub Actions Workflow Run URL
+    description: |
+      **Link to the failed workflow run** (if applicable)
+      
+      Provide the direct URL to the GitHub Actions run where the error occurred.
+    placeholder: "https://github.com/your-org/enbridge-enb-migrate/actions/runs/123456789"
+  validations:
+    required: false
+
+- type: textarea
+  id: environment
+  attributes:
+    label: 🖥️ Environment Information
+    description: |
+      **Provide environment details**
+      
+      Include information about your environment that might be relevant:
+      - GitHub organization details
+      - Source system versions
+      - Any custom configurations
+      - Browser (if UI-related)
+    placeholder: |
+      - GitHub Organization: enterprise-org
+      - Azure DevOps Server version: 2022.1
+      - Custom team naming conventions: enabled
+      - Browser: Chrome 120.0
+  validations:
+    required: false
+
+- type: textarea
+  id: additional
+  attributes:
+    label: 📎 Additional Context
+    description: |
+      **Add any other context about the problem**
+      
+      Include:
+      - Workarounds you've tried
+      - Similar issues you've encountered
+      - Impact on your team/project
+      - Any other relevant information
+    placeholder: |
+      This is blocking our migration of 15 repositories from Azure DevOps. 
+      
+      Workarounds tried:
+      - Manually creating teams first (didn't work)
+      - Using different service account (same error)
+      
+      This started happening after we updated our organization settings last week.
+  validations:
+    required: false
+
+- type: markdown
+  attributes:
+    value: |
+      ---
+      
+      ## 🔍 What Happens Next
+      
+      After submitting this bug report:
+      
+      1. **Automatic Labeling**: The issue will be tagged with `bug` and `needs-triage`
+      2. **Team Review**: Our team will review and prioritize based on severity
+      3. **Investigation**: We'll investigate and may ask for additional information
+      4. **Resolution**: We'll work on a fix and keep you updated on progress
+      
+      ### 🚀 Want to Help?
+      
+      If you're comfortable with PowerShell or GitHub Actions, we welcome contributions! 
+      Check out our [Contributing Guide](../../CONTRIBUTING.md) for more information.
+      
+      ---
+
+- type: checkboxes
+  id: checklist
+  attributes:
+    label: "✅ Submission Checklist"
+    description: "Please confirm before submitting:"
+    options:
+      - label: "I have searched existing issues to avoid duplicates"
+        required: true
+      - label: "I have provided clear steps to reproduce the issue"
+        required: true
+      - label: "I have included relevant logs or error messages"
+        required: true
+      - label: "I have removed any sensitive information (credentials, internal URLs, etc.)"
+        required: true
