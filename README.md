@@ -90,22 +90,21 @@ $response.id  # This is your App User ID
 
 ### Step 4: Update Configuration with GitHub Copilot
 
-Open **GitHub Copilot Chat** in VS Code and run these commands:
+Open your repository in VS Code and use **GitHub Copilot Coding Agent** to configure everything in one step.
 
-**Update App References:**
+**Ask Copilot:**
 ```
-@workspace Use the update-app-name skill to update all references with:
-- App Name: YOUR-APP-NAME
-- App ID: YOUR-APP-USER-ID
+Use the update-app-name skill to update all references with:
+
+App Name: YOUR-APP-NAME
+App ID: YOUR-APP-USER-ID
+
+Use the update-default-org skill to update all references with:
+
+Organization: YOUR-ORG-NAME
 ```
 
-**Update Organization:**
-```
-@workspace Use the update-default-org skill to update all references with:
-- Organization: YOUR-ORG-NAME
-```
-
-This updates all workflow files, scripts, and documentation automatically.
+Replace `YOUR-APP-NAME`, `YOUR-APP-USER-ID`, and `YOUR-ORG-NAME` with your actual values. Copilot will update all workflow files, scripts, and documentation automatically in a single pull request.
 
 ---
 
@@ -191,20 +190,20 @@ The workflow creates the repository, migrates code, sets up teams, and configure
 
 ### Custom Properties
 
-Add custom repository properties (like app IDs, cost centers, etc.) using Copilot:
+Add custom repository properties (like app IDs, cost centers, etc.) using GitHub Copilot Coding Agent:
 
 ```
-@workspace Use the add-custom-properties skill to add app_id property
+Use the add-custom-properties skill to add app_id property
 ```
 
 See [Custom Properties Guide](.github/skills/add-custom-properties/SKILL.md)
 
 ### Add New Source Systems
 
-Support additional source control systems using Copilot:
+Support additional source control systems using GitHub Copilot Coding Agent:
 
 ```
-@workspace Use the add-import-source skill to add GitLab support
+Use the add-import-source skill to add GitLab support
 ```
 
 See [Add Import Source Guide](.github/skills/add-import-source/SKILL.md)
@@ -240,7 +239,7 @@ See [Add Import Source Guide](.github/skills/add-import-source/SKILL.md)
 ## Support
 
 - 📖 **Skills Documentation:** [`.github/skills/`](.github/skills/)
-- 💬 **GitHub Copilot:** Use `@workspace` to get help with configuration
+- 💬 **GitHub Copilot Coding Agent:** Ask Copilot to help with configuration and customization
 - 🐛 **Issues:** [Report issues](../../issues/new)
 
 ---
