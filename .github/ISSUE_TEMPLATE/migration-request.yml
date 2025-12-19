@@ -1,0 +1,185 @@
+name: 🏃‍♂️ Repository Creation/Migration
+description: Request a simple repository creation or migration
+title: '[migration-request]: '
+labels: ['migration-request']
+type: migration-request
+
+body:
+- type: markdown
+  attributes:
+    value: |
+      ## 🎯 What This Form Does
+      
+      This form will create a new GitHub repository and configure team access.
+      
+      ### 📋 Quick Reference Guide
+      
+      **Team Structure Created**:
+      - 👥 `{team-name}` - Your team (with maintain permissions)
+      - 🔧 `{team-name}-admins` - Admin team (full access)
+
+- type: dropdown
+  id: org
+  attributes:
+    label: 🏢 GitHub Organization
+    description: Choose the organization for your repository
+    options:
+      - {{DEFAULT ORG}}
+  validations:
+    required: true
+
+- type: input
+  id: team-name
+  attributes:
+    label: 👥 Team Name
+    description: |
+      **Your team's name** - This team will have maintain permissions on the repository.
+      
+      **Format Requirements:**
+      - Lowercase letters and numbers only
+      - Use hyphens (-) to separate words
+      - Must start and end with a letter or number
+      
+      **Examples:**
+      - `platform-engineering`
+      - `data-team`
+      - `cloudops`
+    placeholder: "Enter your team name (e.g., platform-engineering)"
+  validations:
+    required: true
+
+- type: input
+  id: repo-name
+  attributes:
+    label: 📦 Repository Name
+    description: |
+      **The name of your new repository**
+      
+      **Format Requirements:**
+      - Lowercase letters and numbers only
+      - Use hyphens (-) to separate words
+      - Must start and end with a letter or number
+      
+      **Examples:**
+      - `user-management-api`
+      - `pipeline-monitor`
+      - `inventory-dashboard`
+    placeholder: "Enter repository name (e.g., user-management-api)"
+  validations:
+    required: true
+
+- type: dropdown
+  id: criticality
+  attributes:
+    label: 🔒 Criticality Level
+    description: |
+      **Security and access level for your repository**
+      
+      This determines repository visibility and team permissions:
+      
+      **Non-Critical (L3/L4):**
+      - Repository is Internal (visible to organization members)
+      - Teams have standard permissions
+      - Suitable for most development projects
+      
+      **Critical (L1/L2):**
+      - Repository is Private (restricted access)
+      - Enhanced security controls
+      - Teams have limited permissions initially
+      - Use for production systems, sensitive data, or compliance-required applications
+      
+      💡 **Default recommendation**: Start with "non-critical" unless you specifically need enhanced security.
+    options:
+      - non-critical
+      - critical
+    default: 0
+  validations:
+    required: true
+
+- type: markdown
+  attributes:
+    value: |
+      ---
+      
+      ## 🔧 Optional Migration Settings
+      
+      The following fields are only needed if you're migrating from an existing repository or need special configurations.
+
+- type: input
+  id: only-folder
+  attributes:
+    label: 📁 Only Include Specific Folder
+    description: |
+      **For partial repository migrations** (Optional)
+      
+      If you only want to migrate a specific folder from the source repository, specify the folder path here. Leave empty to migrate the entire repository.
+      
+      **Examples:**
+      - `src` - Only migrate the src folder
+      - `docs` - Only migrate documentation
+      - `backend/api` - Only migrate a specific service
+      
+      💡 **When to use**: When the source repository contains multiple projects and you only want one of them.
+    placeholder: "Enter folder path (e.g., src, docs, backend/api)"
+  validations:
+    required: false
+
+- type: input
+  id: clone-url
+  attributes:
+    label: 🔗 Source Repository URL
+    description: |
+      **URL of the repository to migrate FROM** (Optional)
+      
+      If you're migrating code from an existing repository, provide the clone URL here. Leave empty if creating a new, empty repository.
+      
+      **Supported Sources:**
+      - **Azure DevOps**: `https://dev.azure.com/organization/project/_git/repository`
+      - **Bitbucket**: `https://bitbucket.org/workspace/repository.git`
+      - **GitHub**: `https://github.com/owner/repository.git`
+      - **SVN**: `https://svn.example.com/repository/trunk`
+      
+      **Examples:**
+      - `https://dev.azure.com/org/MyProject/_git/MyApp`
+      - `https://bitbucket.org/slug/repo.git`
+      - `https://github.com/old-org/legacy-system.git`
+      
+      💡 **Note**: Make sure you have access to the source repository and any required credentials are configured.
+    placeholder: "Enter source repository URL (optional)"
+  validations:
+    required: false
+
+- type: markdown
+  attributes:
+    value: |
+      ---
+      
+      ## 📋 What Will Be Created
+      
+      Based on your inputs:
+      
+      ### 📦 Repository
+      **Name**: `{repo-name}`
+      
+      ### 👥 Team Structure
+      - **`{team-name}`** - Your team (maintain permissions)
+      - **`{team-name}-admins`** - Admin team (full admin permissions)
+      
+      ### 🔐 Access Permissions
+      - Repository visibility depends on criticality level
+      - If migrating, all code will be transferred with git history preserved
+      
+      ---
+
+- type: checkboxes
+  id: agree
+  attributes:
+    label: "✅ Confirmation"
+    description: "Please confirm the following before submitting:"
+    options:
+      - label: "I have reviewed all input parameters and verified they are correct"
+        required: true
+      - label: "I understand the team structure that will be created"
+        required: true
+      - label: "I have the necessary permissions to create repositories"
+        required: true

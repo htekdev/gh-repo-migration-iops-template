@@ -1,0 +1,19 @@
+# 7F2056776B13F62496320EF95352570EA18DE27D37285F09D240D1B6B7A5F8D2
+# VERSION: 1.0.0
+
+version: 2
+registries:
+  github-octocat:
+    type: git
+    url: https://github.com
+    username: x-access-token
+    password: ${{secrets.DEPENDABOT_GITHUB_ACCESS_TOKEN}}
+      
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    rebase-strategy: auto
+    registries:
+      - github-octocat
+    schedule:
+      interval: "weekly"
