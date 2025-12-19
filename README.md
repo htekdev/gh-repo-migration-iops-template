@@ -18,73 +18,6 @@ The Repository Migration Framework automates the complex process of moving repos
 - 📋 **Standardized Process** - Consistent naming, structure, and configuration
 - 🛠️ **Enterprise Ready** - GitHub Apps, audit logging, and compliance features
 
-## Architecture Overview
-
-### How It Works
-
-```mermaid
-graph TD
-    A[Migration Request] --> B[Input Validation]
-    B --> C[GitHub App Authentication]
-    C --> D[Repository Creation]
-    D --> E[Team Setup]
-    E --> F[Source Migration]
-    F --> G[Security Configuration]
-    G --> H[Post-Migration Setup]
-    
-    F --> F1[Azure DevOps]
-    F --> F2[BitBucket]
-    F --> F3[Subversion]
-    F --> F4[GitHub]
-    
-    H --> H1[Branch Protection]
-    H --> H2[Mandatory Files]
-    H --> H3[ADO Integration]
-```
-
-### Core Components
-
-1. **GitHub Actions Workflows** - Orchestration and automation engine
-2. **PowerShell Scripts** - Migration logic and API interactions  
-3. **GitHub App** - Secure authentication and enhanced permissions
-4. **Team Management** - Hierarchical permission structures
-5. **Source Integrations** - Support for multiple source control systems
-
-### Supported Migration Sources
-
-| Source | Description | Authentication | Features |
-|--------|-------------|----------------|----------|
-| **Azure DevOps** | Git repos, TFVC with folders | Personal Access Token | Pipeline rewiring, board integration |
-| **BitBucket** | Git repositories | Username/App Password | Full history preservation |
-| **Subversion** | SVN repositories | Username/Password | History conversion to Git |
-| **GitHub** | Internal/external repos | GitHub Token/App | Repository cloning and setup |
-
-## Prerequisites
-
-Before setting up the migration framework, ensure you have:
-
-### Required Tools
-- **PowerShell 7.0+** - [Installation guide](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell)
-- **GitHub CLI** - [Installation guide](https://cli.github.com/)
-- **Git** - [Installation guide](https://git-scm.com/downloads)
-
-### Required Permissions
-- **Organization Owner** access in target GitHub organization
-- **GitHub App creation** permissions
-- **Source system access** (ADO, BitBucket, etc.) with appropriate permissions
-
-### PowerShell Modules
-The framework automatically installs required modules:
-- `powershell-yaml` - YAML processing
-- `jwtPS` - JWT token generation
-
-### Known Limitations
-
-- **Repository Size**: Very large repositories (>5GB) may require additional considerations
-- **Binary Files**: Large binary files may impact migration performance
-- **Complex Branching**: Complex branch structures may require manual review post-migration
-- **Custom Hooks**: Source system hooks and triggers are not migrated
-- **Issue/PR History**: Only ADO supports work item integration; other sources migrate code only
 
 ---
 
@@ -267,6 +200,66 @@ Go to: **Repository Settings** → **Secrets and variables** → **Actions**
 4. **Submit** and watch it work!
 
 The workflow creates the repository, migrates code, sets up teams, and configures permissions automatically.
+
+## Architecture Overview
+
+### How It Works
+
+```mermaid
+graph TD
+    A[Migration Request] --> B[Input Validation]
+    B --> C[GitHub App Authentication]
+    C --> D[Repository Creation]
+    D --> E[Team Setup]
+    E --> F[Source Migration]
+    F --> G[Security Configuration]
+    G --> H[Post-Migration Setup]
+    
+    F --> F1[Azure DevOps]
+    F --> F2[BitBucket]
+    F --> F3[Subversion]
+    F --> F4[GitHub]
+    
+    H --> H1[Branch Protection]
+    H --> H2[Mandatory Files]
+    H --> H3[ADO Integration]
+```
+
+### Core Components
+
+1. **GitHub Actions Workflows** - Orchestration and automation engine
+2. **PowerShell Scripts** - Migration logic and API interactions  
+3. **GitHub App** - Secure authentication and enhanced permissions
+4. **Team Management** - Hierarchical permission structures
+5. **Source Integrations** - Support for multiple source control systems
+
+### Supported Migration Sources
+
+| Source | Description | Authentication | Features |
+|--------|-------------|----------------|----------|
+| **Azure DevOps** | Git repos, TFVC with folders | Personal Access Token | Pipeline rewiring, board integration |
+| **BitBucket** | Git repositories | Username/App Password | Full history preservation |
+| **Subversion** | SVN repositories | Username/Password | History conversion to Git |
+| **GitHub** | Internal/external repos | GitHub Token/App | Repository cloning and setup |
+
+## Prerequisites
+
+Before setting up the migration framework, ensure you have:
+
+### Required Tools
+- **PowerShell 7.0+** - [Installation guide](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell)
+- **GitHub CLI** - [Installation guide](https://cli.github.com/)
+- **Git** - [Installation guide](https://git-scm.com/downloads)
+
+### Required Permissions
+- **Organization Owner** access in target GitHub organization
+- **GitHub App creation** permissions
+- **Source system access** (ADO, BitBucket, etc.) with appropriate permissions
+
+### PowerShell Modules
+The framework automatically installs required modules:
+- `powershell-yaml` - YAML processing
+- `jwtPS` - JWT token generation
 
 ---
 
