@@ -1,8 +1,90 @@
 # Repository Migration Framework
 
 [![🏃‍♂️ Repo Create / Import / Migrate](https://github.com/${{ github.repository }}/actions/workflows/migrate.yml/badge.svg?event=workflow_dispatch)](https://github.com/${{ github.repository }}/actions/workflows/migrate.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![PowerShell](https://img.shields.io/badge/PowerShell-7.0%2B-blue.svg)](https://github.com/PowerShell/PowerShell)
+[![GitHub CLI](https://img.shields.io/badge/GitHub%20CLI-Required-green.svg)](https://cli.github.com/)
 
-Automate repository migrations from Azure DevOps, BitBucket, SVN, or GitHub into your organization.
+A comprehensive automation framework that simplifies and standardizes repository migrations into GitHub from various source control systems including Azure DevOps, BitBucket, SVN, and other GitHub repositories.
+
+## What is This?
+
+The Repository Migration Framework automates the complex process of moving repositories between different source control systems while preserving git history, setting up proper team structures, and configuring security controls. It eliminates manual migration steps and ensures consistent, repeatable results.
+
+**Key Benefits:**
+- 🚀 **Automated End-to-End Migration** - Complete repository setup with one workflow
+- 🔒 **Security-First Design** - Proper permissions, branch protection, and team management
+- 🎯 **Multiple Source Support** - ADO, BitBucket, SVN, and GitHub migrations
+- 📋 **Standardized Process** - Consistent naming, structure, and configuration
+- 🛠️ **Enterprise Ready** - GitHub Apps, audit logging, and compliance features
+
+## Architecture Overview
+
+### How It Works
+
+```mermaid
+graph TD
+    A[Migration Request] --> B[Input Validation]
+    B --> C[GitHub App Authentication]
+    C --> D[Repository Creation]
+    D --> E[Team Setup]
+    E --> F[Source Migration]
+    F --> G[Security Configuration]
+    G --> H[Post-Migration Setup]
+    
+    F --> F1[Azure DevOps]
+    F --> F2[BitBucket]
+    F --> F3[Subversion]
+    F --> F4[GitHub]
+    
+    H --> H1[Branch Protection]
+    H --> H2[Mandatory Files]
+    H --> H3[ADO Integration]
+```
+
+### Core Components
+
+1. **GitHub Actions Workflows** - Orchestration and automation engine
+2. **PowerShell Scripts** - Migration logic and API interactions  
+3. **GitHub App** - Secure authentication and enhanced permissions
+4. **Team Management** - Hierarchical permission structures
+5. **Source Integrations** - Support for multiple source control systems
+
+### Supported Migration Sources
+
+| Source | Description | Authentication | Features |
+|--------|-------------|----------------|----------|
+| **Azure DevOps** | Git repos, TFVC with folders | Personal Access Token | Pipeline rewiring, board integration |
+| **BitBucket** | Git repositories | Username/App Password | Full history preservation |
+| **Subversion** | SVN repositories | Username/Password | History conversion to Git |
+| **GitHub** | Internal/external repos | GitHub Token/App | Repository cloning and setup |
+
+## Prerequisites
+
+Before setting up the migration framework, ensure you have:
+
+### Required Tools
+- **PowerShell 7.0+** - [Installation guide](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell)
+- **GitHub CLI** - [Installation guide](https://cli.github.com/)
+- **Git** - [Installation guide](https://git-scm.com/downloads)
+
+### Required Permissions
+- **Organization Owner** access in target GitHub organization
+- **GitHub App creation** permissions
+- **Source system access** (ADO, BitBucket, etc.) with appropriate permissions
+
+### PowerShell Modules
+The framework automatically installs required modules:
+- `powershell-yaml` - YAML processing
+- `jwtPS` - JWT token generation
+
+### Known Limitations
+
+- **Repository Size**: Very large repositories (>5GB) may require additional considerations
+- **Binary Files**: Large binary files may impact migration performance
+- **Complex Branching**: Complex branch structures may require manual review post-migration
+- **Custom Hooks**: Source system hooks and triggers are not migrated
+- **Issue/PR History**: Only ADO supports work item integration; other sources migrate code only
 
 ---
 
@@ -235,6 +317,44 @@ See [Add Import Source Guide](.github/skills/add-import-source/SKILL.md)
 - Verify correct secrets are configured for your source (ADO_PAT, BB_PAT, etc.)
 - Check source URL format matches examples
 - Ensure base URL variables are set (BITBUCKET_BASE_URL, SVN_BASE_URL)
+
+---
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details on:
+
+- How to submit bug reports and feature requests
+- Development setup and coding standards
+- Pull request process and requirements
+- PowerShell coding conventions
+
+### Quick Start for Contributors
+
+1. **Fork the repository** and clone your fork
+2. **Install prerequisites** (PowerShell 7.0+, GitHub CLI, Git)
+3. **Create a feature branch** for your changes
+4. **Test your changes** with a test organization
+5. **Submit a pull request** following our template
+
+## Security
+
+Security is paramount for migration frameworks. Please see our [Security Policy](SECURITY.md) for:
+
+- Reporting security vulnerabilities
+- Supported versions and security updates
+- Security best practices for users
+- Framework security features
+
+**Report vulnerabilities**: [hector.flores@htek.dev](mailto:hector.flores@htek.dev)
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for a detailed list of changes and version history.
 
 ---
 
