@@ -1,6 +1,3 @@
-# 55E1851D02B9044E7D4B92ED0945A99D456D4EB9D948200D188DBF8F1D7A4144
-# VERSION: 1.0.0
-
 name: Dependabot Pull Request Approve and Merge
 
 on: pull_request_target
