@@ -102,6 +102,8 @@ App ID: YOUR-APP-USER-ID
 Use the update-default-org skill to update all references with:
 
 Organization: YOUR-ORG-NAME
+
+Finalize the README to be production ready using your skills
 ```
 
 Replace `YOUR-APP-NAME`, `YOUR-APP-USER-ID`, and `YOUR-ORG-NAME` with your actual values. Copilot will update all workflow files, scripts, and documentation automatically in a single pull request.
