@@ -23,6 +23,26 @@ The Repository Migration Framework automates the complex process of moving repos
 
 ## Setup Instructions
 
+### 🤖 New: Interactive Setup with GitHub Copilot
+
+**Want guided, interactive setup?** Use the onboarding agent:
+
+```
+@workspace /onboarding
+```
+
+The onboarding agent will:
+- Walk you through each setup step with validation
+- Request screenshots to confirm completion
+- Help customize for your organization
+- Skip configuration for unused source systems
+- Add custom properties if needed
+- Finalize the repository when you're ready
+
+**Prefer manual setup?** Continue with the steps below.
+
+---
+
 ### Step 1: Create Your Repository from This Template
 
 **Click here to create:** [Use this template](../../generate)
@@ -312,7 +332,13 @@ Use the add-import-source skill to add GitLab support
 
 See [Add Import Source Guide](.github/skills/add-import-source/SKILL.md)
 
-### All Available Skills:
+### GitHub Copilot Agents & Skills
+
+#### Custom Agents
+
+- **[template-onboarding](.github/agents/onboarding-agent.md)** - Interactive onboarding guide for template setup
+
+#### Skills
 
 - **[add-custom-properties](.github/skills/add-custom-properties/SKILL.md)** - Add repository metadata
 - **[add-import-source](.github/skills/add-import-source/SKILL.md)** - Support new source systems
