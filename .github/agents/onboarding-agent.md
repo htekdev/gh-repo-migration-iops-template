@@ -197,7 +197,7 @@ Based on your needs assessment, I'll guide you through configuring the source sy
 
 ##### Step 4.1a: Create ADO Personal Access Token
 
-1. Go to: `https://dev.azure.com/{your-ado-organization}/_usersSettings/tokens` (replace `{your-ado-organization}` with your actual ADO organization name)
+1. Go to: `https://dev.azure.com/{organization}/_usersSettings/tokens` (replace `{organization}` with your Azure DevOps organization name)
 2. Click "New Token"
 3. Configure the token:
    - **Name**: `GitHub Migration Framework`
@@ -370,11 +370,11 @@ Custom properties allow you to add structured metadata to your repositories (app
 
 **Do you want to configure custom properties?**
 
-If yes, I will:
-1. Explain what custom properties are available
-2. Help you define organization-level properties in GitHub
-3. Update the workflow to populate these properties during migration
-4. Guide you to use the `add-custom-properties` skill to implement this
+If yes, I will guide you through:
+1. Understanding available custom properties
+2. Defining organization-level properties in GitHub (you'll do this in GitHub settings)
+3. Using the `add-custom-properties` skill to update the workflow
+4. Configuring the workflow to populate these properties during migration
 
 **Common custom properties:**
 - `app_id` - Application identifier for CMDB integration

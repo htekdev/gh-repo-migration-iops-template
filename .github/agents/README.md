@@ -79,7 +79,7 @@ You can:
 
 ## Creating New Agents
 
-Want to create your own custom agent? See the [skill-creator guide](../skills/skill-creator/SKILL.md) for best practices and patterns.
+Want to create your own custom agent? See the [skill-creator guide](../skills/skill-creator/SKILL.md) for general patterns and best practices that can be adapted for agents. Note that while skills and agents are different concepts (skills for automation, agents for interactive guidance), many of the same principles apply.
 
 ### Agent File Structure
 
