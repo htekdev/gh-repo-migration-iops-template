@@ -127,6 +127,27 @@ Go to: **Repository Settings** → **Secrets and variables** → **Actions**
 **Secrets:**
 - `ADO_PAT` - [Create Personal Access Token](https://learn.microsoft.com/azure-devops/organizations/accounts/use-personal-access-tokens-to-authenticate) with **Code (Read)** scope
 
+**Variables:**
+- `ADO_SERVICE_CONNECTION_ID` - The ID of a GitHub service connection created in a central ADO project. This connection will be shared to other projects to enable pipeline rewiring to GitHub. See setup instructions below.
+
+#### Setting up ADO Service Connection
+
+1. **Create a central project** in Azure DevOps (if you don't already have one) for managing shared service connections
+2. **Create a GitHub service connection** in this central project:
+   - Go to **Project Settings** → **Service connections** → **New service connection**
+   - Select **GitHub** as the connection type
+   - Configure authentication (OAuth or Personal Access Token)
+   - Name it appropriately (e.g., `github-migration-shared`)
+3. **Get the Service Connection ID:**
+   - Navigate to the service connection you just created
+   - The ID is visible in the URL: `https://dev.azure.com/{org}/{project}/_settings/adminservices?resourceId={SERVICE_CONNECTION_ID}`
+   - Or use Azure CLI: `az devops service-endpoint list --org https://dev.azure.com/{org} --project {project}`
+4. **Add the ID as a repository variable:**
+   - Go to your migration framework repository settings
+   - Add `ADO_SERVICE_CONNECTION_ID` with the service connection ID as the value
+
+**Note:** This service connection will be automatically shared to other projects during migration to enable pipeline rewiring.
+
 </details>
 
 <details>

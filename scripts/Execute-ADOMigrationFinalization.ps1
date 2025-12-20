@@ -4,7 +4,7 @@ Param(
 
 . "$($PSScriptRoot)/modules.ps1"
 
-$adoServiceConnectionId = if($env:ADO_SERVICE_CONNECTION_ID) { $env:ADO_SERVICE_CONNECTION_ID } else { throw "ADO_SERVICE_CONNECTION_ID environment variable not set" } which is constant across projects 
+$adoServiceConnectionId = if($env:ADO_SERVICE_CONNECTION_ID) { $env:ADO_SERVICE_CONNECTION_ID } else { throw "ADO_SERVICE_CONNECTION_ID environment variable not set" }
 
 gh extension install github/gh-gei
 gh extension install github/gh-ado2gh
@@ -15,12 +15,12 @@ try{
 
   if([String]::IsNullOrEmpty($env:ADO_PAT)){
     throw "Environment variable ADO_PAT is not set"
-  } 
-  
+  }
+
   $adoOrg = $env:IMPORT_ADO_ORGANIZATION
   $adoProject = $env:IMPORT_ADO_PROJECT
   $adoRepo = $env:IMPORT_ADO_REPO
-  
+
   # Parse components from github repo url using regex
   $githubRepoUrlRegex = [regex]::new('https://github.com/(?<organization>.+)/(?<repo>.+)(?:.git)?')
   $githubRepoUrlMatch = $githubRepoUrlRegex.Match($githubRepoUrl)
@@ -51,7 +51,7 @@ try{
   gh ado2gh share-service-connection `
     --ado-org $adoOrg `
     --ado-team-project $adoProject `
-    --service-connection-id $adoServiceConnectionId --verbose 
+    --service-connection-id $adoServiceConnectionId --verbose
 
   # Setup
   Update-GitHubToken -Organization $githubOrg
@@ -61,7 +61,7 @@ try{
         --ado-team-project $adoProject `
         --github-org "$githubOrg" `
         --github-repo "$githubRepo" --verbose
-  
+
   gh ado2gh configure-autolink  `
         --ado-org $adoOrg `
         --ado-team-project $adoProject `
