@@ -404,7 +404,9 @@ See [CHANGELOG.md](CHANGELOG.md) for a detailed list of changes and version hist
 
 ## Support
 
+- 🤖 **Interactive Setup:** Use `@workspace /onboarding` with GitHub Copilot for guided setup
 - 📖 **Skills Documentation:** [`.github/skills/`](.github/skills/)
+- 📋 **Custom Agents:** [`.github/agents/`](.github/agents/)
 - 💬 **GitHub Copilot Coding Agent:** Ask Copilot to help with configuration and customization
 - 🐛 **Issues:** [Report issues](../../issues/new)
 
