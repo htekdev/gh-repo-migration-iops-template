@@ -64,7 +64,7 @@ The framework requires a GitHub App for authentication and permissions. This is 
 **Instructions:**
 
 1. Navigate to your organization settings:
-   - Go to: `https://github.com/organizations/YOUR-ORG/settings/apps/new`
+   - Go to: `https://github.com/organizations/{your-org}/settings/apps/new` (replace `{your-org}` with your organization name)
    
 2. Fill in the GitHub App creation form:
 
@@ -162,7 +162,9 @@ Navigate to: **Your Repository → Settings → Secrets and variables → Action
 
 **Important**: 
 - Open the `.pem` file in a text editor
-- Copy the ENTIRE contents including the `-----BEGIN RSA PRIVATE KEY-----` and `-----END RSA PRIVATE KEY-----` lines
+- Copy the ENTIRE contents including the header and footer lines:
+  - PKCS#1 format: `-----BEGIN RSA PRIVATE KEY-----` and `-----END RSA PRIVATE KEY-----`
+  - Or PKCS#8 format: `-----BEGIN PRIVATE KEY-----` and `-----END PRIVATE KEY-----`
 - Paste as-is into the secret value
 
 **Validation**: 
@@ -195,7 +197,7 @@ Based on your needs assessment, I'll guide you through configuring the source sy
 
 ##### Step 4.1a: Create ADO Personal Access Token
 
-1. Go to: `https://dev.azure.com/YOUR-ADO-ORG/_usersSettings/tokens`
+1. Go to: `https://dev.azure.com/{your-ado-organization}/_usersSettings/tokens` (replace `{your-ado-organization}` with your actual ADO organization name)
 2. Click "New Token"
 3. Configure the token:
    - **Name**: `GitHub Migration Framework`
@@ -372,7 +374,7 @@ If yes, I will:
 1. Explain what custom properties are available
 2. Help you define organization-level properties in GitHub
 3. Update the workflow to populate these properties during migration
-4. Use the `add-custom-properties` skill to implement this
+4. Guide you to use the `add-custom-properties` skill to implement this
 
 **Common custom properties:**
 - `app_id` - Application identifier for CMDB integration
@@ -396,7 +398,7 @@ If yes, please tell me:
 2. **Authentication method**: (e.g., PAT, username/password, API key)
 3. **URL pattern**: (e.g., `https://gitlab.company.com/group/project`)
 
-I will use the `add-import-source` skill to integrate the new source system.
+I will guide you to use the `add-import-source` skill to integrate the new source system.
 
 ---
 
@@ -414,7 +416,7 @@ Once you've confirmed that:
 
 #### What Finalization Does
 
-Using the `template-to-production` skill, I will:
+When you're ready, I'll guide you to use the `template-to-production` skill, which will:
 
 1. **Refactor README.md** - Convert from setup-focused to usage-focused documentation
 2. **Create SETUP.md** - Move detailed setup instructions for administrators

@@ -33,12 +33,14 @@ This document outlines test scenarios for the template onboarding agent.
    - Provide screenshot of green workflow
 7. Phase 6: Configure custom properties
    - Request custom properties configuration
-   - Agent invokes add-custom-properties skill
+   - Agent guides user to invoke add-custom-properties skill
+   - User invokes skill separately
 8. Phase 7: Skip (no additional source systems needed)
 9. Phase 8: Finalize for production
    - Confirm all checklist items
    - Say "I'm ready to finalize"
-   - Agent invokes template-to-production skill
+   - Agent guides user to invoke template-to-production skill
+   - User invokes skill separately
 10. Phase 9: Review post-finalization
     - Confirm understanding of new structure
 
@@ -123,8 +125,8 @@ This document outlines test scenarios for the template onboarding agent.
 3. Complete Phases 2-5 (GitHub App setup and test)
 4. Phase 7: Add GitLab support
    - Request to add GitLab
-   - Agent invokes add-import-source skill
-   - Provide GitLab details:
+   - Agent guides user to invoke add-import-source skill
+   - User invokes skill separately with GitLab details:
      - URL pattern: `https://gitlab.company.com/group/project`
      - Authentication: Personal Access Token
      - Token scope: api, read_repository
