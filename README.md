@@ -117,7 +117,8 @@ Go to: **Repository Settings** → **Secrets and variables** → **Actions**
 **Variables:**
 | Name | Value | Where to get it |
 |------|-------|-----------------|
-| `GH_APP_ID` | App ID number | From Step 2 || `GH_APP_NAME` | App name (without [bot] suffix) | From Step 2 |
+| `GH_APP_ID` | App ID number | From Step 2 |
+| `GH_APP_NAME` | App name (without [bot] suffix) | From Step 2 |
 | `GH_APP_USER_ID` | Full numeric user ID | From Step 3 |
 #### Optional (Configure for sources you'll use):
 
