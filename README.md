@@ -43,7 +43,7 @@ Your organization needs a GitHub App for authentication and permissions.
 
 **Create the App:**
 
-1. Go to: **Organization Settings** → **Developer settings** → **GitHub Apps** → [**New GitHub App**](../../settings/apps/new)
+1. Go to: **Organization Settings** → **Developer settings** → **GitHub Apps** → [**New GitHub App**](https://github.com/settings/apps/new)
 
 2. **Basic Information:**
    - **GitHub App name:** Choose a name (e.g., `repo-migrate`, `migration-bot`)
