@@ -103,29 +103,7 @@ $response.id  # This is your App User ID
 
 ---
 
-### Step 4: Update Configuration with GitHub Copilot
-
-Open your repository in VS Code and use **GitHub Copilot Coding Agent** to configure everything in one step.
-
-**Ask Copilot:**
-```
-Use the update-app-name skill to update all references with:
-
-App Name: YOUR-APP-NAME
-App ID: YOUR-APP-USER-ID
-
-Use the update-default-org skill to update all references with:
-
-Organization: YOUR-ORG-NAME
-
-Finalize the README to be production ready using your skills
-```
-
-Replace `YOUR-APP-NAME`, `YOUR-APP-USER-ID`, and `YOUR-ORG-NAME` with your actual values. Copilot will update all workflow files, scripts, and documentation automatically in a single pull request.
-
----
-
-### Step 5: Configure Secrets
+### Step 4: Configure Secrets
 
 Go to: **Repository Settings** → **Secrets and variables** → **Actions**
 
@@ -139,8 +117,8 @@ Go to: **Repository Settings** → **Secrets and variables** → **Actions**
 **Variables:**
 | Name | Value | Where to get it |
 |------|-------|-----------------|
-| `GH_APP_ID` | App ID number | From Step 2 |
-
+| `GH_APP_ID` | App ID number | From Step 2 || `GH_APP_NAME` | App name (without [bot] suffix) | From Step 2 |
+| `GH_APP_USER_ID` | Full numeric user ID | From Step 3 |
 #### Optional (Configure for sources you'll use):
 
 <details>
@@ -182,6 +160,33 @@ Go to: **Repository Settings** → **Secrets and variables** → **Actions**
 - `GH_PAT` - [Create Personal Access Token](https://github.com/settings/tokens) with **repo** scope
 
 </details>
+
+---
+
+### Step 5: Finalize Repository for Production
+
+Now that you've completed the setup, use **GitHub Copilot Coding Agent** to convert this template repository into a production-ready framework:
+
+**Ask Copilot:**
+```
+Use the template-to-production skill to finalize this repository for production use
+```
+
+**What this does:**
+- ✅ Refactors README from setup instructions to usage-focused documentation
+- ✅ Moves administrative documentation to SETUP.md
+- ✅ Replaces all organization placeholders (htekdev → your-org)
+- ✅ Updates workflow badge with your actual repository path
+- ✅ Archives original template documentation
+- ✅ Validates all placeholders are removed
+
+**What you've already configured:**
+- ✅ GitHub App with proper permissions
+- ✅ App ID, name, and user ID as repository variables
+- ✅ App private key as secret
+- ✅ Source system credentials (if applicable)
+
+After Copilot completes the conversion, your repository will be ready for your organization to use!
 
 ---
 
@@ -287,11 +292,9 @@ See [Add Import Source Guide](.github/skills/add-import-source/SKILL.md)
 
 ### All Available Skills:
 
-- **[update-readme-repo](.github/skills/update-readme-repo/SKILL.md)** - Fix workflow status badge
-- **[update-app-name](.github/skills/update-app-name/SKILL.md)** - Update GitHub App references
-- **[update-default-org](.github/skills/update-default-org/SKILL.md)** - Update organization references  
 - **[add-custom-properties](.github/skills/add-custom-properties/SKILL.md)** - Add repository metadata
 - **[add-import-source](.github/skills/add-import-source/SKILL.md)** - Support new source systems
+- **[template-to-production](.github/skills/template-to-production/SKILL.md)** - Convert template to production
 
 ---
 

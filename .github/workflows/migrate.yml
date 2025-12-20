@@ -124,7 +124,7 @@ jobs:
           # Create teams JSON structure
           PARENT_TEAM="${{ inputs.parent-team-name }}"
           ADMIN_TEAM="${{ inputs.admin-team-name || format('{0}-admins', inputs.team-name) }}"
-          
+
           if [ -n "$PARENT_TEAM" ]; then
             cat << EOF >> "$GITHUB_ENV"
           TEAMS<<EOJSON
@@ -173,7 +173,7 @@ jobs:
       - name: Checkout repository
         if: ${{ github.event_name == 'issues' }}
         uses: actions/checkout@v4
-        
+
       - name: Extract values from issue
         if: ${{ github.event_name == 'issues' }}
         id: extract-values
@@ -182,65 +182,65 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Parse values from issue body
-          
+
           # GitHub Organization
           ORG=$(echo "$ISSUE_BODY" | awk '/^### 🏢 GitHub Organization/{getline; if(!$0) getline; print $0}' | xargs)
           if [ -z "$ORG" ]; then
             ORG=$(echo "$ISSUE_BODY" | awk '/^### GitHub Organization$/{getline; if(!$0) getline; print $0}' | xargs)
           fi
-          
+
           # Team Name
           TEAM_NAME=$(echo "$ISSUE_BODY" | awk '/^### 👥 Team Name/{getline; if(!$0) getline; print $0}' | xargs)
           if [ -z "$TEAM_NAME" ]; then
             TEAM_NAME=$(echo "$ISSUE_BODY" | awk '/^### Team Name$/{getline; if(!$0) getline; print $0}' | xargs)
           fi
-          
+
           # Repository Name
           REPO_NAME=$(echo "$ISSUE_BODY" | awk '/^### 📦 Repository Name/{getline; if(!$0) getline; print $0}' | xargs)
           if [ -z "$REPO_NAME" ]; then
             REPO_NAME=$(echo "$ISSUE_BODY" | awk '/^### Repository Name$/{getline; if(!$0) getline; print $0}' | xargs)
           fi
-          
+
           # Only Include Specific Folder
           ONLY_FOLDER=$(echo "$ISSUE_BODY" | awk '/^### 📁 Only Include Specific Folder/{getline; if(!$0) getline; print $0}' | xargs | sed 's/^_No response_$//')
           if [ -z "$ONLY_FOLDER" ]; then
             ONLY_FOLDER=$(echo "$ISSUE_BODY" | awk '/^### Only Include Specific Folder$/{getline; if(!$0) getline; print $0}' | xargs | sed 's/^_No response_$//')
           fi
-          
+
           # Criticality Level
           CRITICALITY=$(echo "$ISSUE_BODY" | awk '/^### 🔒 Criticality Level/{getline; if(!$0) getline; print $0}' | xargs)
           if [ -z "$CRITICALITY" ]; then
             CRITICALITY=$(echo "$ISSUE_BODY" | awk '/^### Criticality$/{getline; if(!$0) getline; print $0}' | xargs)
           fi
-          
+
           # Source Repository URL
           CLONE_URL=$(echo "$ISSUE_BODY" | awk '/^### 🔗 Source Repository URL/{getline; if(!$0) getline; print $0}' | xargs | sed 's/^_No response_$//')
           if [ -z "$CLONE_URL" ]; then
             CLONE_URL=$(echo "$ISSUE_BODY" | awk '/^### Clone URL$/{getline; if(!$0) getline; print $0}' | xargs | sed 's/^_No response_$//')
           fi
-          
+
           # Set default values if empty
-          if [ -z "$ORG" ]; then ORG="{{DEFAULT ORG}}"; fi
+          if [ -z "$ORG" ]; then ORG=$GITHUB_REPOSITORY_OWNER; fi
           if [ -z "$ONLY_FOLDER" ]; then ONLY_FOLDER=""; fi
           if [ -z "$CLONE_URL" ]; then CLONE_URL=""; fi
           if [ -z "$CRITICALITY" ]; then CRITICALITY="non-critical"; fi
-          
+
           # Validate required values
           SHOULD_RUN="true"
           FORMAT_USED="unknown"
-          
+
           # Determine which format was successfully parsed
           if echo "$ISSUE_BODY" | grep -q "^### 🏢 GitHub Organization"; then
             FORMAT_USED="new"
           elif echo "$ISSUE_BODY" | grep -q "^### GitHub Organization$"; then
             FORMAT_USED="old"
           fi
-          
+
           # Check for required values
           MISSING_FIELDS=""
           if [ -z "$TEAM_NAME" ]; then MISSING_FIELDS="$MISSING_FIELDS team-name"; fi
           if [ -z "$REPO_NAME" ]; then MISSING_FIELDS="$MISSING_FIELDS repo-name"; fi
-          
+
           if [ -n "$MISSING_FIELDS" ]; then
             SHOULD_RUN="false"
           fi
@@ -248,7 +248,7 @@ jobs:
           # Create formatted run name for issue title
           ADMIN_TEAM="${TEAM_NAME}-admins"
           ISSUE_TITLE="$TEAM_NAME | $REPO_NAME | $CRITICALITY | $CLONE_URL"
-          
+
           # Output values for next jobs
           {
             echo "org=$ORG"
@@ -272,12 +272,12 @@ jobs:
           issue-number: ${{ github.event.issue.number }}
           body: |
             ## 🔍 Issue Parsing Results
-            
+
             **Format detected:** `${{ steps.extract-values.outputs.format-used }}`
             **Parsing status:** ${{ steps.extract-values.outputs.should-run == 'true' && '✅ Success' || '❌ Failed' }}
-            
+
             ${{ steps.extract-values.outputs.should-run == 'false' && format('**Missing required fields:** {0}', steps.extract-values.outputs.missing-fields) || '' }}
-            
+
             ${{ steps.extract-values.outputs.should-run == 'false' && '⚠️ **Action Required:** Please edit this issue and ensure all required fields are filled out correctly.' || '' }}
 
       - name: Fail workflow if parsing failed
@@ -329,16 +329,16 @@ jobs:
           issue-number: ${{ github.event.issue.number }}
           body: |
             ✅ Migration automatically started with the following parameters:
-            
+
             - Organization: `${{ steps.extract-values.outputs.org }}`
             - Team Name: `${{ steps.extract-values.outputs.team-name }}`
             - Repository Name: `${{ steps.extract-values.outputs.repo-name }}`
             - Only Folder: `${{ steps.extract-values.outputs.only-folder }}`
             - Criticality: `${{ steps.extract-values.outputs.criticality }}`
             - Clone URL: `${{ steps.extract-values.outputs.clone-url }}`
-            
+
             Migration is now in progress. Check workflow status at: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-      
+
       - name: Set outputs for environment variables
         if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'issues' && steps.extract-values.outputs.should-run == 'true') }}
         id: set-env-outputs
@@ -360,7 +360,7 @@ jobs:
     needs: [setup]
     defaults:
       run:
-          shell: pwsh  
+          shell: pwsh
     env:
       GH_ORG: ${{ needs.setup.outputs.gh-org }}
       GH_REPO: ${{ needs.setup.outputs.gh-repo }}
@@ -368,7 +368,7 @@ jobs:
       PRIVATE: ${{ needs.setup.outputs.private }}
       TEAMS: ${{ needs.setup.outputs.teams }}
     steps:
-      
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -395,7 +395,7 @@ jobs:
           else{
             Write-Output "| **Team Name** | ✅ | $($teamName) |" | Out-File -FilePath $env:JOB_SUMMARY_FILE -Encoding utf8 -Append
           }
-          
+
 
           # Validate repo-name. Must be lowercase, no spaces, no special characters except for "-". Must start and end with a letter or number
           $repoName = $env:REPO_NAME
@@ -406,7 +406,7 @@ jobs:
           else{
             Write-Output "| **Repo Name** | ✅ | $($repoName) |" | Out-File -FilePath $env:JOB_SUMMARY_FILE -Encoding utf8 -Append
           }
-          
+
           exit $statusCode
 
       - name: 🔑 Validate Team Membership
@@ -420,16 +420,16 @@ jobs:
         run: |
           . "${{github.workspace}}/scripts/modules.ps1"
           Update-GitHubToken -Organization $env:ORG
-          
+
           # Use the team name directly
           $teamName = $env:TEAM_NAME
           $username = $env:TRIGGERING_ACTOR
-          
+
           Write-Output "| **Team Membership Validation** | 🏃 | Checking if user ``$username`` is member of team ``$teamName`` |" | Out-File -FilePath $env:JOB_SUMMARY_FILE -Encoding utf8 -Append
-          
+
           # Check if user is a member of the team
           $isMember = Test-UserTeamMembership -Org $env:ORG -TeamSlug $teamName -Username $username
-          
+
           if (-not $isMember) {
             $errorMessage = "Repository creation failed. You are not a member of the team ``$teamName`` required to create this repository. Please contact the team administrator or your organization administrator to request access."
             Write-Output "| **Team Membership Validation** | ❌ | $errorMessage |" | Out-File -FilePath $env:JOB_SUMMARY_FILE -Encoding utf8 -Append
@@ -449,9 +449,9 @@ jobs:
         env:
           IMPORT_URL: ${{ needs.setup.outputs.clone-url }}
         run: |
-          & "${{github.workspace}}/scripts/New-ImportRepoDetails.ps1" 
+          & "${{github.workspace}}/scripts/New-ImportRepoDetails.ps1"
 
-      
+
       #####################################################################
       # Create
       #####################################################################
@@ -461,8 +461,8 @@ jobs:
           GH_APP_CERTIFICATE: ${{ secrets.GH_APP_PRIVATE_KEY }}
           GH_APP_ID: ${{ vars.GH_APP_ID }}
           GITHUB_REPO_URL: ${{ env.REPO_URL }}
-          GIT_NAME: {{APP_NAME}}[bot]
-          GIT_EMAIL: {{APP_ID}}+{{APP_NAME}}[bot]@users.noreply.github.com
+          GIT_NAME: ${{ vars.GH_APP_NAME }}[bot]
+          GIT_EMAIL: ${{ vars.GH_APP_USER_ID }}+${{ vars.GH_APP_NAME }}[bot]@users.noreply.github.com
         run: |
           & "${{github.workspace}}/scripts/New-GitHubRepo.ps1"  -githubRepoUrl $($env:GITHUB_REPO_URL)
 
@@ -491,7 +491,7 @@ jobs:
           } | ConvertTo-Json)
           Write-Output "| **Renaming Repo** | ✅ | ``$($env:OLD_ORG)/$($env:OLD_REPO)`` to ``$($env:NEW_ORG)/$($env:NEW_REPO)`` |" | Out-File -FilePath $env:JOB_SUMMARY_FILE -Encoding utf8 -Append
 
-      
+
       #####################################################################
       # Migrate
       #####################################################################
@@ -506,8 +506,8 @@ jobs:
           BB_PASSWORD: ${{ secrets.BB_PAT }}
           ORG: ${{ env.GH_ORG }}
           REPO: ${{ env.GH_REPO }}
-          GIT_NAME: {{APP_NAME}}[bot]
-          GIT_EMAIL: {{APP_ID}}+{{APP_NAME}}[bot]@users.noreply.github.com
+          GIT_NAME: ${{ vars.GH_APP_NAME }}[bot]
+          GIT_EMAIL: ${{ vars.GH_APP_USER_ID }}+${{ vars.GH_APP_NAME }}[bot]@users.noreply.github.com
           INCLUDE_ONLY_PATH: ${{ needs.setup.outputs.only-folder }}
           SVN_SERVICE_USERNAME: ${{ vars.SVN_SERVICE_USERNAME }}
           SVN_SERVICE_PASSWORD: ${{ secrets.SVN_SERVICE_PASSWORD }}
@@ -539,7 +539,7 @@ jobs:
         uses: ./.github/actions/branch-protection-bypass
         id: clear-branch-protection
         with:
-          app-slug: {{APP_NAME}}
+          app-slug: ${{ vars.GH_APP_NAME }}
           repository: ${{ env.GH_ORG }}/${{ env.GH_REPO }}
           token: ${{ steps.app-token.outputs.token }}
 
@@ -552,8 +552,8 @@ jobs:
       #     GH_APP_CERTIFICATE: ${{ secrets.GH_APP_PRIVATE_KEY }}
       #     GH_APP_ID: ${{ vars.GH_APP_ID }}
       #     REPO: https://github.com/${{ env.GH_ORG }}/${{ env.GH_REPO }}
-      #     GIT_NAME: {{APP_NAME}}[bot]
-      #     GIT_EMAIL: {{APP_ID}}+{{APP_NAME}}[bot]@users.noreply.github.com
+      #     GIT_NAME: ${{ vars.GH_APP_NAME }}[bot]
+      #     GIT_EMAIL: ${{ vars.GH_APP_USER_ID }}+${{ vars.GH_APP_NAME }}[bot]@users.noreply.github.com
       #     VALUE: |
       #       # Add your custom properties here in the format:
       #       # property_name=value
@@ -562,7 +562,7 @@ jobs:
       #       # category=${{ needs.setup.outputs.category }}
       #   run: |
       #     & "${{github.workspace}}/scripts/Add-CustomProperties.ps1" -githubRepoUrl $($env:REPO) -value $($env:VALUE)
-          
+
       #####################################################################
       # Post work
       #####################################################################
@@ -582,7 +582,7 @@ jobs:
           Invoke-GitHubApiRoute -Path "repos/$($env:ORG)/$($env:REPO)" -Method PATCH -Body '{"visibility": "internal"}'
 
           Write-Output "| **Changing Repo to `Internal`** | ✅ |  |" | Out-File -FilePath $env:JOB_SUMMARY_FILE -Encoding utf8 -Append
-        
+
       #####################################################################
 
       - uses: nick-fields/retry@v2
@@ -599,7 +599,7 @@ jobs:
           retry_on: error
           timeout_minutes: 10
           shell: pwsh
-          command: | 
+          command: |
             . "${{github.workspace}}/scripts/modules.ps1"
             Update-GitHubToken -Organization $($env:ORG)
 
@@ -638,7 +638,7 @@ jobs:
                 if($parentTeamId) {
                   $body["parent_team_id"] = $parentTeamId
                 }
-                $team = Invoke-GitHubApiRoute -Path "orgs/$($env:ORG)/teams" -Method POST -Body $($body | ConvertTo-Json) 
+                $team = Invoke-GitHubApiRoute -Path "orgs/$($env:ORG)/teams" -Method POST -Body $($body | ConvertTo-Json)
                 $team
                 $created += $team.slug
 
@@ -648,12 +648,12 @@ jobs:
               if($teamPermission -ne 'none'){
                 Invoke-GitHubApiRoute -Path "orgs/$($env:ORG)/teams/$($teamName)/repos/$($env:ORG)/$($env:REPO)" -Method PUT -Body $(@{
                   permission = $teamPermission
-                } | ConvertTo-Json) 
+                } | ConvertTo-Json)
 
                 Write-Output "| **Add Repo Permission`** | ✅ | Team ``$($teamName)``, Permission ``$($teamPermission)``  |" | Out-File -FilePath $env:JOB_SUMMARY_FILE -Encoding utf8 -Append
               }
 
-              
+
             }
 
             # Reverse order
@@ -679,7 +679,7 @@ jobs:
           GITHUB_REPO_URL: https://github.com/${{ env.GH_ORG }}/${{ env.GH_REPO }}
         run: |
           & "${{github.workspace}}/scripts/Execute-ADOMigrationFinalization.ps1"   -githubRepoUrl $($env:GITHUB_REPO_URL)
-     
+
       #####################################################################
       - name: 🔒 Lock ADO Repo
         if: ${{ fromJson(steps.url.outputs.results).source == 'ado' && inputs.only-folder == '' }}
@@ -704,8 +704,8 @@ jobs:
           gh ado2gh disable-ado-repo `
               --ado-org "$adoOrg" `
               --ado-team-project "$adoProject" `
-              --ado-repo "$adoRepo" 
-          
+              --ado-repo "$adoRepo"
+
       #####################################################################
       # Post work
       #####################################################################
@@ -743,10 +743,10 @@ jobs:
           issue-number: ${{ github.event.issue.number }}
           body: |
             ## ✅ Migration Completed Successfully!
-            
+
             Your repository has been successfully created and migrated to:
             👉 [${{ env.GH_ORG }}/${{ env.GH_REPO }}](https://github.com/${{ env.GH_ORG }}/${{ env.GH_REPO }})
-     
+
       - name: ❌ Notify Issue about Team Membership Failure
         if: ${{ failure() && github.event_name == 'issues' && steps.team-validation.outputs.team-membership-failed == 'true' }}
         uses: peter-evans/create-or-update-comment@v4
@@ -754,14 +754,14 @@ jobs:
           issue-number: ${{ github.event.issue.number }}
           body: |
             ## 🚫 Repository Creation Failed - Team Membership Required
-            
+
             **Reason:** You are not a member of the team `${{ needs.setup.outputs.team-name }}` required to create this repository.
-            
+
             **Next Steps:**
             - Contact the team administrator for `${{ needs.setup.outputs.team-name }}`
             - Or contact your organization administrator to request access to the team
             - Once you have been added to the team, you can re-run this migration request
-            
+
             **Team Information:**
             - Required team: `${{ needs.setup.outputs.team-name }}`
             - Your username: `${{ github.triggering_actor }}`
@@ -774,11 +774,11 @@ jobs:
           issue-number: ${{ github.event.issue.number }}
           body: |
             ## ❌ Migration Failed
-            
+
             Unfortunately, the migration process failed. The workflow encountered an error.
-            
+
             Please check the workflow logs for more details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-            
+
       - name: Close Issue
         if: ${{ always() && github.event_name == 'issues' }}
         run: |

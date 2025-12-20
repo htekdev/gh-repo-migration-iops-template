@@ -52,7 +52,7 @@ The repository migration framework is a comprehensive automation framework desig
 - Path manipulation utilities
 - Error handling patterns
 
-**Dependencies**: 
+**Dependencies**:
 - PowerShell modules: `powershell-yaml`, `jwtPS`
 - Used by all other PowerShell scripts
 
@@ -221,12 +221,6 @@ finally {
 - Check for SQL injection and command injection patterns
 - Sanitize file paths and repository names
 
-### Git Operations Standards
-
-#### Commit Standards
-- Use service account: `{{APP_NAME}}[bot]` with email `{{APP_ID}}+{{APP_NAME}}[bot]@users.noreply.github.com`
-- Include descriptive commit messages
-- Preserve git history during migrations when possible
 
 #### Branch Management
 - Default branch handling for different source systems

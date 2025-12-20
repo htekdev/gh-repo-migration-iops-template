@@ -28,28 +28,28 @@ if($env:IMPORT_SOURCE -eq "subversion"){
   git remote add origin $GithubRepoUrl
 }
 
-git branch -r | % { $_.Trim() } |  Where-Object { $_ -notmatch '\->' } | ForEach-Object { 
-  $remote = $_; 
+git branch -r | % { $_.Trim() } |  Where-Object { $_ -notmatch '\->' } | ForEach-Object {
+  $remote = $_;
   $branch = ($remote -replace 'origin/', '')
   if($branch -match '^[A-Za-z][A-Za-z0-9\.\-_\/]+$'){
-    git branch --track $branch $remote 
+    git branch --track $branch $remote
     git checkout $branch
   }
   else{
 
-    git branch --track $branch $remote 
+    git branch --track $branch $remote
     git checkout $branch
 
-     
+
 
     $branch = $branch -replace '[^A-Za-z0-9\.\-_\/]','-'
     $branch = "format-invalid/$branch"
     $remote = $remote -replace '[^A-Za-z0-9\.\-_\/]','-'
     $remote = ($remote -replace 'origin/', 'origin/format-invalid/')
     git branch -m $branch $remote
-    
+
     Write-Output "| **Renaming Branch $($branch) to $($remote)** | 🔶  | Not in correct format |" | Out-File -FilePath $env:JOB_SUMMARY_FILE -Encoding utf8 -Append
-    
+
   }
 }
 
@@ -80,19 +80,19 @@ try{
   $env:GIT_TRACE=1
   $env:GIT_CURL_VERBOSE=1
 
-  
 
-  
+
+
   git reflog expire --expire=now --all && git gc --prune=now --aggressive
   git config http.postBuffer 157286400
   git config pack.window 1
   git config http.version HTTP/1.1
   gh auth setup-git
 
-  
+
   git remote set-url origin $GithubRepoUrl
-  
-  
+
+
 
   $loc = $(Get-Location).Path
   $files = @(@($(Get-ChildItem -Force -Recurse -File | Where-Object { ($($_.Length)/1MB) -gt 100 } | ForEach-Object {$_.FullName.Substring($loc.Length + 1)}))  | % { "`"$($_)`"" })
@@ -133,20 +133,20 @@ try{
       $paths = $path -split ","
 
       Write-Host "Only including multiple paths: `n  - $($paths -join "`n  - ")"
-      
+
       git filter-branch -f --index-filter "git rm --cached -qr --ignore-unmatch -- . && git reset -q `$GIT_COMMIT -- '$($path)'" --prune-empty -- --all
       Write-Output "| **Clean history to exclude other folders** | ✅  | Only ``$($path)`` will be included |" | Out-File -FilePath $env:JOB_SUMMARY_FILE -Encoding utf8 -Append
-  
+
     }
     else{
       git filter-branch -f --subdirectory-filter $path -- --all
     }
-    
-    
+
+
 
     Write-Output "| **Moving Folder to Root** | ✅  | Folder ``$($path)`` |" | Out-File -FilePath $env:JOB_SUMMARY_FILE -Encoding utf8 -Append
 
-    
+
   }
 
   Write-Host "Pushing to $GithubRepoUrl"
@@ -156,29 +156,6 @@ try{
   # Capture the output of the push command in powershell
   git push
   git push --all
-
-  # remote: error: GH013: Repository rule violations found for refs/heads/main.        
-  # remote: Review all repository rules at http://github.com/{{DEFAULT ORG}}/tis-devops-de-framework-non-critical-doodle/rules?ref=refs%2Fheads%2Fmain        
-  # remote: 
-  # remote: - GITHUB PUSH PROTECTION        
-  # remote:   ——————————————————————————————————————————————————————        
-  # remote:    Resolve the following secrets before pushing again.        
-  # remote:           
-  # remote:    (?) Learn how to resolve a blocked push        
-  # remote:    https://docs.github.com/code-security/secret-scanning/pushing-a-branch-blocked-by-push-protection        
-  # remote:           
-  # remote:           
-  # remote:   —— Azure DevOps Personal Access Token ————————————————        
-  # remote:    locations:        
-  # remote:      - commit: 5fce35060881578d6eb7c82e6b6f07d290155591        
-  # remote:        path: extensions/azure-devops/adding/change-control/evaluate-change-tags/task/src/Invoke-Task.local.ps1:17        
-  # remote:           
-  # remote:    (?) To push, remove secret from commit(s) or follow this URL to allow the secret.        
-  # remote:    https://github.com/{{DEFAULT ORG}}/tis-devops-de-framework-non-critical-doodle/security/secret-scanning/unblock-secret/2XeCXZH64naXi0A33GHeymb60ei        
-  # remote: 
-  # To https://github.com/{{DEFAULT ORG}}/tis-devops-de-framework-non-critical-doodle.git
-  # ! [remote rejected] main -> main (push declined due to repository rule violations)
-  # error: failed to push some refs to 'https://github.com/{{DEFAULT ORG}}/tis-devops-de-framework-non-critical-doodle.git'
 
   # Find the paths that are causing the push to failq
   $regex = [regex]::new('path: (?<path>.+):')

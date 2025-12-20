@@ -113,8 +113,10 @@ if($env:IMPORT_URL -match "https://$bbBaseUrl/scm/(?<project>.+)/(?<slug>.+).git
     return
 }
 
+$currentOrg = $env:GITHUB_REPOSITORY_OWNER
+
 # Check if import url is a valid github url
-if($env:IMPORT_URL -match 'https://github.com/(?<organization>{{DEFAULT ORG}})/(?<repo>.+?)(?:\.git)?$'){
+if($env:IMPORT_URL -match "https://github.com/(?<organization>$currentOrg)/(?<repo>.+?)(?:\.git)?$"){
     $results = @{
         "source" = "github"
         "organization" = $Matches['organization']

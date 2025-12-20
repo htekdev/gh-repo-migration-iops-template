@@ -25,7 +25,7 @@ if ($criticality -eq 'critical') {
 
 # Define organization - use provided org or default
 if ([String]::IsNullOrEmpty($org)) {
-    $org = '{{DEFAULT ORG}}'
+    $org = $env:GITHUB_REPOSITORY_OWNER
 }
 
 # Define repository name using current pattern: {deliverable-provider}-{deliverable}-{category}
@@ -70,7 +70,7 @@ $adoRepo = $null
 
 # Parse clone URL if provided to determine import type and details
 if(-not [String]::IsNullOrEmpty($cloneUrl)){
-    
+
     # Check for Azure DevOps URL
     if($cloneUrl -match 'dev\.azure\.com'){
         if([String]::IsNullOrEmpty($env:ADO_PAT)){
@@ -90,7 +90,7 @@ if(-not [String]::IsNullOrEmpty($cloneUrl)){
         $importType = "ado"
         $importFromUrl = $cloneUrl
     }
-    
+
     # Check for BitBucket URL
     elseif($cloneUrl -match 'bitbucket\.org'){
         if([String]::IsNullOrEmpty($env:BB_USERNAME) -or [String]::IsNullOrEmpty($env:BB_PASSWORD)){
@@ -100,19 +100,19 @@ if(-not [String]::IsNullOrEmpty($cloneUrl)){
         $importType = "bitbucket"
         $importFromUrl = $cloneUrl
     }
-    
+
     # Check for GitHub URL
     elseif($cloneUrl -match 'github\.com'){
         $importType = "github"
         $importFromUrl = $cloneUrl
     }
-    
+
     # Check for SVN URL
     elseif($cloneUrl -match 'svn\.'){
         $importType = "svn"
         $importFromUrl = $cloneUrl
     }
-    
+
     # Unknown source type
     else {
         $importType = "unknown"

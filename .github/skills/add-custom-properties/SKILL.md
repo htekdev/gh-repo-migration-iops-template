@@ -111,8 +111,8 @@ Uncomment this section and configure the `VALUE` environment variable:
     GH_APP_CERTIFICATE: ${{ secrets.GH_APP_PRIVATE_KEY }}
     GH_APP_ID: ${{ vars.GH_APP_ID }}
     REPO: https://github.com/${{ env.GH_ORG }}/${{ env.GH_REPO }}
-    GIT_NAME: {{APP_NAME}}[bot]
-    GIT_EMAIL: {{APP_ID}}+{{APP_NAME}}[bot]@users.noreply.github.com
+    GIT_NAME: ${{ vars.GH_APP_NAME }}[bot]
+    GIT_EMAIL: ${{ vars.GH_APP_USER_ID }}+${{ vars.GH_APP_NAME }}[bot]@users.noreply.github.com
     VALUE: |
       app_id=${{ needs.setup.outputs.app-id }}
       category=${{ needs.setup.outputs.category }}

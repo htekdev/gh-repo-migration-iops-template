@@ -42,7 +42,7 @@ The framework currently supports these import sources:
    - Environment variables: `SUBVERSION_SERVICE_USERNAME`, `SUBVERSION_SERVICE_PASSWORD`
 
 5. **GitHub** (internal) - Same organization
-   - URL pattern: `https://github.com/{{DEFAULT ORG}}/{repo}`
+   - URL pattern: `https://github.com/htekdev/{repo}`
    - Auth: GitHub App token
    - Environment variable: Handled by `modules.ps1`
 
