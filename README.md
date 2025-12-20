@@ -1,6 +1,6 @@
 # Repository Migration Framework
 
-[![🏃‍♂️ Repo Create / Import / Migrate](https://github.com/${{ github.repository }}/actions/workflows/migrate.yml/badge.svg?event=workflow_dispatch)](https://github.com/${{ github.repository }}/actions/workflows/migrate.yml)
+[![🏃‍♂️ Repo Create / Import / Migrate](https://github.com/htekdev/actions/workflows/migrate.yml/badge.svg?event=workflow_dispatch)](https://github.com/htekdev/actions/workflows/migrate.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PowerShell](https://img.shields.io/badge/PowerShell-7.0%2B-blue.svg)](https://github.com/PowerShell/PowerShell)
 [![GitHub CLI](https://img.shields.io/badge/GitHub%20CLI-Required-green.svg)](https://cli.github.com/)
