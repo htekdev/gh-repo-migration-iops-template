@@ -65,9 +65,16 @@ $warnings = @()
 # Check 1: GitHub CLI installed
 Write-Host "Checking GitHub CLI..." -NoNewline
 try {
-    $ghVersion = gh --version 2>&1
-    if ($LASTEXITCODE -eq 0) {
-        Write-Host " ✅" -ForegroundColor Green
+    $ghCommand = Get-Command gh -ErrorAction SilentlyContinue
+    if ($ghCommand) {
+        $ghVersion = gh --version 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host " ✅" -ForegroundColor Green
+        }
+        else {
+            Write-Host " ❌" -ForegroundColor Red
+            $issues += "GitHub CLI (gh) is installed but not functioning correctly"
+        }
     }
     else {
         Write-Host " ❌" -ForegroundColor Red
@@ -88,19 +95,24 @@ if (![string]::IsNullOrEmpty($Organization) -and ![string]::IsNullOrEmpty($Repos
     
     try {
         $vars = gh api "repos/$Organization/$Repository/actions/variables" --jq '.variables[].name' 2>&1
-        
-        foreach ($varName in $requiredVars) {
-            if ($vars -notcontains $varName) {
-                $missingVars += $varName
+        if ($LASTEXITCODE -eq 0) {
+            foreach ($varName in $requiredVars) {
+                if ($vars -notcontains $varName) {
+                    $missingVars += $varName
+                }
+            }
+            
+            if ($missingVars.Count -eq 0) {
+                Write-Host " ✅" -ForegroundColor Green
+            }
+            else {
+                Write-Host " ❌" -ForegroundColor Red
+                $issues += "Missing repository variables: $($missingVars -join ', ')"
             }
         }
-        
-        if ($missingVars.Count -eq 0) {
-            Write-Host " ✅" -ForegroundColor Green
-        }
         else {
-            Write-Host " ❌" -ForegroundColor Red
-            $issues += "Missing repository variables: $($missingVars -join ', ')"
+            Write-Host " ⚠️" -ForegroundColor Yellow
+            $warnings += "Could not check repository variables (may need authentication)"
         }
     }
     catch {
@@ -116,19 +128,24 @@ if (![string]::IsNullOrEmpty($Organization) -and ![string]::IsNullOrEmpty($Repos
     
     try {
         $secrets = gh api "repos/$Organization/$Repository/actions/secrets" --jq '.secrets[].name' 2>&1
-        
-        foreach ($secretName in $requiredSecrets) {
-            if ($secrets -notcontains $secretName) {
-                $missingSecrets += $secretName
+        if ($LASTEXITCODE -eq 0) {
+            foreach ($secretName in $requiredSecrets) {
+                if ($secrets -notcontains $secretName) {
+                    $missingSecrets += $secretName
+                }
+            }
+            
+            if ($missingSecrets.Count -eq 0) {
+                Write-Host " ✅" -ForegroundColor Green
+            }
+            else {
+                Write-Host " ❌" -ForegroundColor Red
+                $issues += "Missing repository secrets: $($missingSecrets -join ', ')"
             }
         }
-        
-        if ($missingSecrets.Count -eq 0) {
-            Write-Host " ✅" -ForegroundColor Green
-        }
         else {
-            Write-Host " ❌" -ForegroundColor Red
-            $issues += "Missing repository secrets: $($missingSecrets -join ', ')"
+            Write-Host " ⚠️" -ForegroundColor Yellow
+            $warnings += "Could not check repository secrets (may need authentication)"
         }
     }
     catch {

@@ -89,19 +89,26 @@ Write-Host "[1/8] GitHub App Configuration..." -NoNewline
 $total++
 if (![string]::IsNullOrEmpty($Organization) -and ![string]::IsNullOrEmpty($Repository)) {
     try {
-        $vars = gh api "repos/$Organization/$Repository/actions/variables" --jq '.variables[] | {name: .name, value: .value}' 2>&1 | ConvertFrom-Json
-        
-        $hasAppName = $vars | Where-Object { $_.name -eq 'GH_APP_NAME' }
-        $hasAppId = $vars | Where-Object { $_.name -eq 'GH_APP_ID' }
-        $hasUserId = $vars | Where-Object { $_.name -eq 'GH_APP_USER_ID' }
-        
-        if ($hasAppName -and $hasAppId -and $hasUserId) {
-            Write-Host " ✅" -ForegroundColor Green
-            $passed++
+        $varsOutput = gh api "repos/$Organization/$Repository/actions/variables" --jq '.variables[] | {name: .name, value: .value}' 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            $vars = $varsOutput | ConvertFrom-Json
+            
+            $hasAppName = $vars | Where-Object { $_.name -eq 'GH_APP_NAME' }
+            $hasAppId = $vars | Where-Object { $_.name -eq 'GH_APP_ID' }
+            $hasUserId = $vars | Where-Object { $_.name -eq 'GH_APP_USER_ID' }
+            
+            if ($hasAppName -and $hasAppId -and $hasUserId) {
+                Write-Host " ✅" -ForegroundColor Green
+                $passed++
+            }
+            else {
+                Write-Host " ❌" -ForegroundColor Red
+                $critical += "GitHub App variables incomplete (need GH_APP_NAME, GH_APP_ID, GH_APP_USER_ID)"
+            }
         }
         else {
             Write-Host " ❌" -ForegroundColor Red
-            $critical += "GitHub App variables incomplete (need GH_APP_NAME, GH_APP_ID, GH_APP_USER_ID)"
+            $critical += "Cannot access repository variables - check GitHub CLI authentication"
         }
     }
     catch {
@@ -118,15 +125,22 @@ Write-Host "[2/8] GitHub App Private Key..." -NoNewline
 $total++
 if (![string]::IsNullOrEmpty($Organization) -and ![string]::IsNullOrEmpty($Repository)) {
     try {
-        $secrets = gh api "repos/$Organization/$Repository/actions/secrets" --jq '.secrets[].name' 2>&1
-        
-        if ($secrets -contains 'GH_APP_PRIVATE_KEY') {
-            Write-Host " ✅" -ForegroundColor Green
-            $passed++
+        $secretsOutput = gh api "repos/$Organization/$Repository/actions/secrets" --jq '.secrets[].name' 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            $secrets = $secretsOutput
+            
+            if ($secrets -contains 'GH_APP_PRIVATE_KEY') {
+                Write-Host " ✅" -ForegroundColor Green
+                $passed++
+            }
+            else {
+                Write-Host " ❌" -ForegroundColor Red
+                $critical += "GH_APP_PRIVATE_KEY secret not found"
+            }
         }
         else {
             Write-Host " ❌" -ForegroundColor Red
-            $critical += "GH_APP_PRIVATE_KEY secret not found"
+            $critical += "Cannot access repository secrets - check GitHub CLI authentication"
         }
     }
     catch {
@@ -178,9 +192,9 @@ if (Test-Path '.github/workflows/migrate.yml') {
         $workflowContent = Get-Content '.github/workflows/migrate.yml' -Raw
         
         # Check for key components
-        $hasWorkflowDispatch = $workflowContent -match 'workflow_dispatch:'
-        $hasSetupJob = $workflowContent -match 'job.*setup:'
-        $hasTestJob = $workflowContent -match 'job.*test:'
+        $hasWorkflowDispatch = $workflowContent -match 'workflow_dispatch\s*:'
+        $hasSetupJob = $workflowContent -match 'jobs\s*:[\s\S]*?\bsetup\s*:'
+        $hasTestJob = $workflowContent -match 'jobs\s*:[\s\S]*?\btest\s*:'
         
         if ($hasWorkflowDispatch -and $hasSetupJob -and $hasTestJob) {
             Write-Host " ✅" -ForegroundColor Green

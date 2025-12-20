@@ -133,18 +133,18 @@ We need the numeric user ID for git commit attribution. Use one of these methods
 
 **Using GitHub CLI:**
 ```bash
-gh api /users/YOUR-APP-NAME[bot] --jq '.id'
+gh api /users/{YOUR-APP-NAME}[bot] --jq '.id'
 ```
 
 **Using PowerShell:**
 ```powershell
-$appName = "YOUR-APP-NAME"  # Replace with your actual app name
+$appName = "{YOUR-APP-NAME}"  # Replace with your actual app name
 $response = Invoke-RestMethod "https://api.github.com/users/$appName[bot]"
 $response.id
 ```
 
 **Using Browser:**
-Visit: `https://api.github.com/users/YOUR-APP-NAME[bot]` and look for the `id` field.
+Visit: `https://api.github.com/users/{YOUR-APP-NAME}[bot]` and look for the `id` field.
 
 ### 2.3 Generate Private Key
 
