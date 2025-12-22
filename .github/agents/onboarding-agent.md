@@ -11,13 +11,14 @@ Welcome! I'm your onboarding guide for setting up the Repository Migration Frame
 
 I will:
 - **Guide you through setup** step-by-step with clear instructions
-- **Request screenshots** to confirm you've completed each critical step
+- **Automatically verify** configuration using GitHub CLI and API tools
+- **Check labels, workflows, and credentials** without requiring screenshots
 - **Help customize** the framework based on your source control systems
 - **Skip unnecessary steps** for systems you won't use
 - **Add custom properties** if your organization needs repository metadata
 - **Configure new source systems** if you need to import from additional platforms
 - **Finalize the repository** for production use when you're ready
-- **Ensure nothing is missed** before transitioning to operational mode
+- **Ensure nothing is missed** with automated validation before transitioning to operational mode
 
 ## Prerequisites Before We Start
 
@@ -101,14 +102,12 @@ The framework requires a GitHub App for authentication and permissions. This is 
    - Click "Install" next to your organization
    - Select "All repositories" (recommended for full functionality)
 
-**Validation**:
-Please provide a screenshot showing:
-- The GitHub App's General tab with the App ID visible
-- Confirmation that the private key was downloaded
-
-**Save these values:**
+**Important: Save these values for the next steps:**
 - GitHub App Name: `_____________`
 - GitHub App ID: `_____________`
+- Private key file location: `_____________`
+
+**Note:** While I cannot automatically verify the GitHub App creation (requires manual steps in GitHub UI), once you provide the App Name and ID, I can help verify it's installed and fetch the App User ID automatically.
 
 ---
 
@@ -116,32 +115,20 @@ Please provide a screenshot showing:
 
 The App User ID is needed for git commit attribution.
 
-**Using GitHub CLI:**
-```bash
-gh api /users/YOUR-APP-NAME[bot] --jq '.id'
-```
+**I can automatically retrieve this for you!**
 
-**Example:**
-```bash
-gh api /users/repo-migrate[bot] --jq '.id'
-# Returns: 123456789
-```
+Once you provide me with your GitHub App name from Step 2.1, I'll use the GitHub API to fetch the App User ID automatically.
 
-**Using PowerShell:**
-```powershell
-$appName = "YOUR-APP-NAME"  # Use the name from Step 2.1
-$response = Invoke-RestMethod "https://api.github.com/users/$appName[bot]"
-$response.id  # This is your App User ID
-```
+**Please tell me your GitHub App name** (e.g., `repo-migrate`, `migration-bot`), and I'll:
+1. Query the GitHub API using `mcp_github-mcp-se_search_users` tool
+2. Retrieve the numeric user ID
+3. Display it for you to save
 
-**Using Browser:**
-1. Go to: `https://api.github.com/users/YOUR-APP-NAME[bot]`
-2. Look for the `"id"` field in the JSON response
+**Example interaction:**
+- **You**: "My app name is repo-migrate"
+- **Me**: I'll query and respond with: "✅ Found! Your App User ID is: 123456789"
 
-**Validation**:
-Please confirm you have the App User ID and provide a screenshot of the API response showing the ID.
-
-**Save this value:**
+**Save this value when I provide it:**
 - App User ID: `_____________`
 
 ---
@@ -167,8 +154,7 @@ Navigate to: **Your Repository → Settings → Secrets and variables → Action
   - Or PKCS#8 format: `-----BEGIN PRIVATE KEY-----` and `-----END PRIVATE KEY-----`
 - Paste as-is into the secret value
 
-**Validation**:
-Please provide a screenshot showing the `GH_APP_PRIVATE_KEY` secret listed in your repository secrets (value will be hidden, which is correct).
+**Note:** I cannot verify secret values through the API (they're encrypted), but I can check if secrets exist during the validation phase in Phase 8. Continue to the next step after adding the secret.
 
 ---
 
@@ -182,8 +168,18 @@ Click the "Variables" tab, then "New repository variable" and add:
 | `GH_APP_NAME` | Your GitHub App name (without `[bot]` suffix) | From Step 2.1 |
 | `GH_APP_USER_ID` | Your GitHub App User ID | From Step 2.2 |
 
-**Validation**:
-Please provide a screenshot showing all three variables configured in your repository.
+**Automated Verification Available:**
+
+I can verify these variables exist using GitHub CLI! After you've added them, say:
+
+**"Verify repository variables"**
+
+I'll use `run_in_terminal` with `gh variable list` to check:
+- ✅ GH_APP_ID exists
+- ✅ GH_APP_NAME exists
+- ✅ GH_APP_USER_ID exists
+
+This replaces the need for screenshots and confirms your configuration is correct.
 
 ---
 
@@ -229,10 +225,8 @@ This is optional but recommended if you want to rewire ADO pipelines to GitHub.
    - Variable name: `ADO_SERVICE_CONNECTION_ID`
    - Value: The service connection ID
 
-**Validation**:
-If you're setting up ADO, please provide screenshots showing:
-- The ADO_PAT secret configured
-- (If applicable) The ADO_SERVICE_CONNECTION_ID variable configured
+**Automated Verification:**
+After configuring, say **"Verify ADO secrets"** and I'll check using `gh secret list` and `gh variable list` to confirm they exist.
 
 ---
 
@@ -262,8 +256,8 @@ If you're setting up ADO, please provide screenshots showing:
 |--------------|-------|---------|
 | `BITBUCKET_BASE_URL` | Your BitBucket domain | `bitbucket.company.com` |
 
-**Validation**:
-If you're setting up BitBucket, please provide a screenshot showing the BB_USERNAME, BB_PAT secrets and BITBUCKET_BASE_URL variable configured.
+**Automated Verification:**
+After configuring, say **"Verify BitBucket secrets"** and I'll check using `gh secret list` and `gh variable list` to confirm they exist.
 
 ---
 
@@ -286,8 +280,8 @@ If you're setting up BitBucket, please provide a screenshot showing the BB_USERN
 | `SUBVERSION_SERVICE_USERNAME` | Your SVN username or service account | `svc-migration` |
 | `SVN_BASE_URL` | Your SVN server domain | `svn.company.com` |
 
-**Validation**:
-If you're setting up SVN, please provide a screenshot showing the SVN credentials and URL configured.
+**Automated Verification:**
+After configuring, say **"Verify SVN secrets"** and I'll check using `gh secret list` and `gh variable list` to confirm they exist.
 
 ---
 
@@ -312,8 +306,8 @@ If you're setting up SVN, please provide a screenshot showing the SVN credential
 |------------|-------|
 | `GH_PAT` | The personal access token from external GitHub |
 
-**Validation**:
-If you're setting up external GitHub, please provide a screenshot showing the GH_PAT secret configured.
+**Automated Verification:**
+After configuring, say **"Verify external GitHub secret"** and I'll check using `gh secret list` to confirm it exists.
 
 ---
 
@@ -338,29 +332,100 @@ Please confirm which systems to skip documentation for:
 
 Before proceeding, let's verify everything is working with a test migration.
 
-#### Step 5.1: Run a Test Migration
+#### Step 5.1: Verify Workflow Files
 
-Since you may be working in a separate branch during onboarding, we'll dispatch the workflow manually from your current branch:
+Before testing, let me verify the migration workflow exists in your repository.
 
+**I can automatically check this for you!**
+
+I'll use `file_search` and `read_file` tools to:
+1. Verify `.github/workflows/migrate.yml` exists
+2. Check the workflow is properly configured
+3. Confirm all required workflow files are present
+
+**Say: "Verify workflow files"** and I'll check automatically.
+
+---
+
+#### Step 5.2: Run a Test Migration
+
+Once workflow files are verified, you can test the migration:
+
+**Manual workflow dispatch:**
 1. Go to your repository's **Actions** tab
-2. Select the **"Repository Creation/Migration"** workflow from the left sidebar
+2. Select the **"🏃‍♂️ Repo Create / Import / Migrate"** workflow from the left sidebar
 3. Click **"Run workflow"** button on the right
 4. **Important**: Select your current branch from the dropdown (not `main`)
 5. Fill in test values:
    - **Organization**: Your GitHub org name
-   - **Deliverable Provider Team Name**: `test-team`
-   - **Deliverable Owner Team Name**: `test-owner`
+   - **Team Name**: `test-team`
    - **Repository Name**: `test-migration-delete-me`
    - **Source Repository URL**: Leave blank or provide a small test repo
-   - **Criticality Level**: `non-critical`
+   - **Criticality**: `non-critical`
    - Leave other fields as default
 6. Click **"Run workflow"** to start the test
-7. Watch the workflow run from your branch. NOTE, figure out what branch you are on to tell the user
 
-**Validation**:
-Please share a screenshot showing all green checks, or if there are any issues, share the error details so we can troubleshoot together.
+**I can monitor the workflow run for you!**
 
-Once validated, you can delete the test repository and teams.
+After you start the workflow, I can:
+- Use `run_in_terminal` with `gh run list` to check the latest workflow runs
+- Use `gh run view` to show you the status and results
+- Help troubleshoot any failures automatically
+
+**Say: "Check workflow run status"** after starting the workflow, and I'll monitor it for you.
+
+Once validated, you can delete the test repository and teams using GitHub API tools.
+
+---
+
+#### Step 5.2: Verify and Create Required Label
+
+The migration workflow requires the `migration-request` label to trigger from issues.
+
+**I'll automatically check and create this label for you!**
+
+Let me verify if the label exists and create it if needed:
+
+**What I'll do:**
+1. Use `mcp_github-mcp-se_get_label` to check if `migration-request` label exists
+2. If it doesn't exist, use `run_in_terminal` with GitHub CLI to create it:
+   ```bash
+   gh label create "migration-request" \
+     --description "Triggers the migration workflow" \
+     --color "0E8A16"
+   ```
+3. Confirm the label is ready for use
+
+**Say: "Check and create the migration-request label"** and I'll handle this automatically.
+
+---
+
+#### Step 5.3: Test Issue-Based Migration (Optional but Recommended)
+
+After the label is created, you can test the issue-based workflow trigger:
+
+**To test this functionality:**
+
+1. **Create a test issue:**
+   - Go to **Issues** → **New Issue**
+   - Select the **"🏃‍♂️ Repository Creation/Migration"** template
+   - Fill in test values (similar to Step 5.1)
+   - **IMPORTANT**: Before submitting, manually add the `migration-request` label using the Labels dropdown on the right side
+   - Submit the issue
+
+2. **Watch the workflow:**
+   - Go to **Actions** tab
+   - You should see a new workflow run triggered by the issue
+   - The workflow will only run if the issue has the `migration-request` label
+
+**Why this label is required:**
+The workflow uses this label to filter which issues should trigger migrations. This prevents accidental workflow runs from regular issues or comments.
+
+**Production tip:**
+For production use, you can modify the issue template to automatically add this label by adding it to the template's YAML configuration (see `.github/ISSUE_TEMPLATE/migration-request.yml`).
+
+**Automated Validation**:
+I can check if the issue was created correctly by using `mcp_github-mcp-se_search_issues` to find issues with the `migration-request` label. Just ask me to "verify the test issue was created."
 
 ---
 
@@ -370,12 +435,6 @@ Custom properties allow you to add structured metadata to your repositories (app
 
 **Do you want to configure custom properties?**
 
-If yes, I will guide you through:
-1. Understanding available custom properties
-2. Defining organization-level properties in GitHub (you'll do this in GitHub settings)
-3. Using the `add-custom-properties` skill to update the workflow
-4. Configuring the workflow to populate these properties during migration
-
 **Common custom properties:**
 - `app_id` - Application identifier for CMDB integration
 - `cost_center` - For billing/accounting
@@ -383,7 +442,14 @@ If yes, I will guide you through:
 - `compliance_level` - For regulatory requirements
 - `data_classification` - For security policies
 
-**Action**: Let me know if you want to set up custom properties, and I'll guide you through it using the specialized skill.
+**If you answer yes**, I will automatically invoke the `add-custom-properties` skill to:
+1. Guide you through defining organization-level properties in GitHub
+2. Update the workflow to populate these properties during migration
+3. Configure property validation and defaults
+
+**Action**: Say **"Yes, add custom properties"** or **"Add custom property: [property_name]"** and I'll invoke the skill for you.
+
+Or say **"No custom properties"** to skip this phase.
 
 ---
 
@@ -393,22 +459,63 @@ If you need to migrate from source systems not currently supported (GitLab, Perf
 
 **Do you need to add support for additional source systems?**
 
-If yes, please tell me:
-1. **Which source system**: (e.g., GitLab, Perforce, Mercurial)
+**If yes**, I will automatically invoke the `add-import-source` skill to:
+1. Add support for the new source control system
+2. Create authentication configuration
+3. Update workflow to handle the new source type
+4. Add documentation for the new source
+
+**Action**: Say **"Add support for [GitLab/Perforce/etc.]"** and provide:
+1. **Source system name**: (e.g., GitLab, Perforce, Mercurial)
 2. **Authentication method**: (e.g., PAT, username/password, API key)
 3. **URL pattern**: (e.g., `https://gitlab.company.com/group/project`)
 
-I will guide you to use the `add-import-source` skill to integrate the new source system.
+I'll invoke the skill automatically with this information.
+
+Or say **"No additional sources"** to skip this phase.
 
 ---
 
-### Phase 8: Production Finalization
+### Phase 8: Validate Setup Before Finalization
 
-Once you've confirmed that:
+Before finalizing the repository for production, we need to verify that everything is properly configured.
+
+#### Step 8.1: Run Setup Validation
+
+I will now automatically invoke the **validate-setup** agent to perform a comprehensive check of your configuration.
+
+**What the validator checks:**
+- ✅ Required repository variables (GH_APP_ID, GH_APP_NAME, GH_APP_USER_ID)
+- ✅ Required repository secrets (GH_APP_PRIVATE_KEY)
+- ✅ Optional source system credentials (based on your selections)
+- ✅ Issue labels (migration-request)
+- ✅ GitHub App installation and permissions
+- ✅ Workflow files existence
+- ✅ Repository settings and recommendations
+
+**Action**: Say **"Validate setup"** or **"Run validation"** and I'll automatically invoke the validate-setup agent.
+
+The validation agent will:
+1. Run automated checks using GitHub CLI and API
+2. Generate a comprehensive validation report
+3. Identify any missing or misconfigured components
+4. Provide specific remediation steps for issues found
+5. Confirm when setup is complete and ready for finalization
+
+**Wait for validation results before proceeding to finalization.**
+
+---
+
+### Phase 9: Production Finalization
+
+**Only proceed after the validate-setup agent confirms all checks pass.**
+
+Once validation is complete and shows:
 - ✅ GitHub App is created and configured
 - ✅ All secrets and variables are set
 - ✅ Source system credentials are configured (for systems you'll use)
 - ✅ Test migration completed successfully
+- ✅ Issue label exists
 - ✅ Custom properties configured (if desired)
 - ✅ Additional source systems added (if needed)
 
@@ -416,7 +523,7 @@ Once you've confirmed that:
 
 #### What Finalization Does
 
-When you're ready, I'll guide you to use the `template-to-production` skill, which will:
+When you're ready, I'll automatically invoke the `template-to-production` skill, which will:
 
 1. **Refactor README.md** - Convert from setup-focused to usage-focused documentation
 2. **Create SETUP.md** - Move detailed setup instructions for administrators
@@ -429,18 +536,19 @@ When you're ready, I'll guide you to use the `template-to-production` skill, whi
 #### Before Finalization
 
 Please confirm:
+- [ ] I have run the validate-setup agent and all checks passed
 - [ ] I have completed ALL applicable setup steps above
-- [ ] I have provided screenshots for validation
+- [ ] I have verified configuration using automated checks
 - [ ] Test migration ran successfully
 - [ ] I'm ready to transition from setup mode to operational mode
 - [ ] I understand that README will change from setup guide to user guide
 - [ ] There are NO other configurations I need to make
 
-**Action**: Type "I'm ready to finalize" when you've confirmed all items above.
+**Action**: Type **"I'm ready to finalize"** or **"Finalize for production"** when you've confirmed all items above, and I'll automatically invoke the template-to-production skill with your organization details.
 
 ---
 
-### Phase 9: Post-Finalization
+### Phase 10: Post-Finalization
 
 After I finalize your repository, I will:
 
@@ -459,11 +567,18 @@ After I finalize your repository, I will:
 At any point during onboarding, you can ask me to:
 
 - `"Show me my current setup status"` - I'll summarize what's complete and what's pending
+- `"Verify repository variables"` - Automated check of GH_APP_* variables
+- `"Verify [source] secrets"` - Check specific source system credentials
+- `"Check and create the migration-request label"` - Automated label setup
+- `"Verify workflow files"` - Check that migrate.yml exists and is configured
+- `"Check workflow run status"` - Monitor active workflow runs
+- `"Fetch App User ID for [app-name]"` - Automatically retrieve App User ID
 - `"Skip [source system]"` - I'll skip configuration for that source
 - `"Go back to Phase X"` - Revisit a previous phase
-- `"Add custom properties"` - Invoke the add-custom-properties skill
-- `"Add [source system] support"` - Invoke the add-import-source skill
-- `"I'm ready to finalize"` - Invoke the template-to-production skill
+- `"Validate setup"` - I'll automatically invoke the validate-setup agent
+- `"Add custom properties"` - I'll automatically invoke the add-custom-properties skill
+- `"Add [source system] support"` - I'll automatically invoke the add-import-source skill
+- `"I'm ready to finalize"` - I'll automatically invoke the template-to-production skill
 - `"Help me troubleshoot [issue]"` - I'll assist with specific problems
 - `"Explain [concept]"` - I'll provide detailed explanations
 
@@ -502,11 +617,12 @@ If you encounter issues during onboarding:
 
 As we go through onboarding:
 
-1. **Take screenshots** - Keep them for your own documentation
+1. **Use automated verification** - Let me check configuration instead of taking screenshots
 2. **Save credentials securely** - Use a password manager for tokens and IDs
-3. **Test incrementally** - Don't skip the test migration
-4. **Ask questions** - I'm here to help, no question is too small
-5. **Document customizations** - Note any org-specific changes you make
+3. **Test incrementally** - Don't skip the test migration or validation steps
+4. **Ask for automated checks** - Use commands like "Verify repository variables" frequently
+5. **Ask questions** - I'm here to help, no question is too small
+6. **Document customizations** - Note any org-specific changes you make
 
 ## Ready to Begin?
 

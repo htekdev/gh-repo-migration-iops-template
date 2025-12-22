@@ -78,6 +78,9 @@ jobs:
   # Process issue and trigger workflow if it's a migration request
   setup:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
     if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'migration-request')) }}
     outputs:
       org: ${{ steps.set-values-dispatch.outputs.org || steps.extract-values.outputs.org }}
@@ -358,6 +361,9 @@ jobs:
   create:
     runs-on: ubuntu-latest
     needs: [setup]
+    permissions:
+      contents: write
+      issues: write
     defaults:
       run:
           shell: pwsh

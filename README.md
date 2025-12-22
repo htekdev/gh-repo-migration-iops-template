@@ -209,9 +209,21 @@ Go to: **Repository Settings** → **Secrets and variables** → **Actions**
 
 Now that you've completed the setup, use **GitHub Copilot Coding Agent** to convert this template repository into a production-ready framework:
 
-**Ask Copilot:**
+**Before finalizing, validate your setup:**
 ```
-Use the template-to-production skill to finalize this repository for production use
+@workspace use the validate-setup agent
+```
+
+The validation agent will automatically check:
+- ✅ All required secrets and variables are configured
+- ✅ Issue labels exist
+- ✅ GitHub App is properly installed
+- ✅ Workflow files are present
+- ✅ Source system credentials (if applicable)
+
+**After validation passes, finalize the repository:**
+```
+@workspace use the template-to-production skill
 ```
 
 **What this does:**
@@ -244,7 +256,10 @@ After Copilot completes the conversion, your repository will be ready for your o
    - **Repository Name:** New repo name (e.g., `user-api`)
    - **Source URL:** (Optional) Repository to migrate from
    - **Criticality:** `critical` (private) or `non-critical` (internal)
-4. **Submit** and watch it work!
+4. **IMPORTANT**: Before submitting, add the `migration-request` label using the Labels dropdown on the right
+5. **Submit** and watch it work!
+
+**Note**: The workflow only runs when an issue has the `migration-request` label. This prevents accidental triggering from regular issues.
 
 The workflow creates the repository, migrates code, sets up teams, and configures permissions automatically.
 
@@ -405,7 +420,8 @@ See [CHANGELOG.md](CHANGELOG.md) for a detailed list of changes and version hist
 ## Support
 
 - 🤖 **Interactive Setup:** Use `@workspace /onboarding` with GitHub Copilot for guided setup
-- 📖 **Skills Documentation:** [`.github/skills/`](.github/skills/)
+- � **Validate Setup:** Use `@workspace use the validate-setup agent` to verify configuration
+- �📖 **Skills Documentation:** [`.github/skills/`](.github/skills/)
 - 📋 **Custom Agents:** [`.github/agents/`](.github/agents/)
 - 💬 **GitHub Copilot Coding Agent:** Ask Copilot to help with configuration and customization
 - 🐛 **Issues:** [Report issues](../../issues/new)
