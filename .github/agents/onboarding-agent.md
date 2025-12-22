@@ -65,7 +65,7 @@ The framework requires a GitHub App for authentication and permissions. This is 
 
 1. Navigate to your organization settings:
    - Go to: `https://github.com/organizations/{your-org}/settings/apps/new` (replace `{your-org}` with your organization name)
-   
+
 2. Fill in the GitHub App creation form:
 
    **Basic Information:**
@@ -101,7 +101,7 @@ The framework requires a GitHub App for authentication and permissions. This is 
    - Click "Install" next to your organization
    - Select "All repositories" (recommended for full functionality)
 
-**Validation**: 
+**Validation**:
 Please provide a screenshot showing:
 - The GitHub App's General tab with the App ID visible
 - Confirmation that the private key was downloaded
@@ -138,7 +138,7 @@ $response.id  # This is your App User ID
 1. Go to: `https://api.github.com/users/YOUR-APP-NAME[bot]`
 2. Look for the `"id"` field in the JSON response
 
-**Validation**: 
+**Validation**:
 Please confirm you have the App User ID and provide a screenshot of the API response showing the ID.
 
 **Save this value:**
@@ -160,14 +160,14 @@ Navigate to: **Your Repository → Settings → Secrets and variables → Action
 |------------|-------|--------|
 | `GH_APP_PRIVATE_KEY` | Complete contents of the `.pem` file | From Step 2.1 |
 
-**Important**: 
+**Important**:
 - Open the `.pem` file in a text editor
 - Copy the ENTIRE contents including the header and footer lines:
   - PKCS#1 format: `-----BEGIN RSA PRIVATE KEY-----` and `-----END RSA PRIVATE KEY-----`
   - Or PKCS#8 format: `-----BEGIN PRIVATE KEY-----` and `-----END PRIVATE KEY-----`
 - Paste as-is into the secret value
 
-**Validation**: 
+**Validation**:
 Please provide a screenshot showing the `GH_APP_PRIVATE_KEY` secret listed in your repository secrets (value will be hidden, which is correct).
 
 ---
@@ -182,7 +182,7 @@ Click the "Variables" tab, then "New repository variable" and add:
 | `GH_APP_NAME` | Your GitHub App name (without `[bot]` suffix) | From Step 2.1 |
 | `GH_APP_USER_ID` | Your GitHub App User ID | From Step 2.2 |
 
-**Validation**: 
+**Validation**:
 Please provide a screenshot showing all three variables configured in your repository.
 
 ---
@@ -229,7 +229,7 @@ This is optional but recommended if you want to rewire ADO pipelines to GitHub.
    - Variable name: `ADO_SERVICE_CONNECTION_ID`
    - Value: The service connection ID
 
-**Validation**: 
+**Validation**:
 If you're setting up ADO, please provide screenshots showing:
 - The ADO_PAT secret configured
 - (If applicable) The ADO_SERVICE_CONNECTION_ID variable configured
@@ -262,7 +262,7 @@ If you're setting up ADO, please provide screenshots showing:
 |--------------|-------|---------|
 | `BITBUCKET_BASE_URL` | Your BitBucket domain | `bitbucket.company.com` |
 
-**Validation**: 
+**Validation**:
 If you're setting up BitBucket, please provide a screenshot showing the BB_USERNAME, BB_PAT secrets and BITBUCKET_BASE_URL variable configured.
 
 ---
@@ -286,7 +286,7 @@ If you're setting up BitBucket, please provide a screenshot showing the BB_USERN
 | `SUBVERSION_SERVICE_USERNAME` | Your SVN username or service account | `svc-migration` |
 | `SVN_BASE_URL` | Your SVN server domain | `svn.company.com` |
 
-**Validation**: 
+**Validation**:
 If you're setting up SVN, please provide a screenshot showing the SVN credentials and URL configured.
 
 ---
@@ -312,7 +312,7 @@ If you're setting up SVN, please provide a screenshot showing the SVN credential
 |------------|-------|
 | `GH_PAT` | The personal access token from external GitHub |
 
-**Validation**: 
+**Validation**:
 If you're setting up external GitHub, please provide a screenshot showing the GH_PAT secret configured.
 
 ---
@@ -328,7 +328,7 @@ For each system you're NOT using, I can:
 
 Please confirm which systems to skip documentation for:
 - [ ] Skip Azure DevOps
-- [ ] Skip BitBucket  
+- [ ] Skip BitBucket
 - [ ] Skip SVN
 - [ ] Skip External GitHub
 
@@ -340,10 +340,13 @@ Before proceeding, let's verify everything is working with a test migration.
 
 #### Step 5.1: Run a Test Migration
 
-1. Go to your repository's **Issues** tab
-2. Click **"New Issue"**
-3. Select **"🏃‍♂️ Repository Creation/Migration"** template
-4. Fill in test values:
+Since you may be working in a separate branch during onboarding, we'll dispatch the workflow manually from your current branch:
+
+1. Go to your repository's **Actions** tab
+2. Select the **"Repository Creation/Migration"** workflow from the left sidebar
+3. Click **"Run workflow"** button on the right
+4. **Important**: Select your current branch from the dropdown (not `main`)
+5. Fill in test values:
    - **Organization**: Your GitHub org name
    - **Deliverable Provider Team Name**: `test-team`
    - **Deliverable Owner Team Name**: `test-owner`
@@ -351,14 +354,11 @@ Before proceeding, let's verify everything is working with a test migration.
    - **Source Repository URL**: Leave blank or provide a small test repo
    - **Criticality Level**: `non-critical`
    - Leave other fields as default
-5. Submit the issue
-6. Watch the Actions workflow run
+6. Click **"Run workflow"** to start the test
+7. Watch the workflow run from your branch. NOTE, figure out what branch you are on to tell the user
 
-**Validation**: 
-Please provide a screenshot showing:
-- The successful workflow run (all green checks)
-- The created test repository
-- The created teams in your organization
+**Validation**:
+Please share a screenshot showing all green checks, or if there are any issues, share the error details so we can troubleshoot together.
 
 Once validated, you can delete the test repository and teams.
 
